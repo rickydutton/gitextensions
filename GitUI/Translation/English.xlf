@@ -1135,6 +1135,10 @@ Do you want to open it?</source>
         <source>Files</source>
         <target />
       </trans-unit>
+      <trans-unit id="CombinedDiff.Text">
+        <source>Combined Diff</source>
+
+      </trans-unit>
     </body>
   </file>
   <file datatype="plaintext" original="FileViewer" source-language="en">
@@ -7670,6 +7674,10 @@ When OpenSSH is used, command line dialogs are shown!
       </trans-unit>
       <trans-unit id="_parentsText.Text">
         <source>Parent(s)</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="_uninterestingDiffOmitted.Text">
+        <source>Uninteresting diff hunks are omitted.</source>
         <target />
       </trans-unit>
       <trans-unit id="_secondsAgo.Text">
