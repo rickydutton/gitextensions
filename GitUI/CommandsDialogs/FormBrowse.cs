@@ -1,4 +1,3 @@
-using Timer = System.Windows.Forms.Timer;
 using GitUI.UserControls.RevisionGridClasses;
 using System;
 using System.Collections.Generic;
@@ -148,8 +147,6 @@ namespace GitUI.CommandsDialogs
         private readonly FormBrowseMenus _formBrowseMenus;
         private readonly FormBrowseMenuCommands _formBrowseMenuCommands;
 
-        private readonly Timer _timerToDelayOnactivated = new Timer();
-
         /// <summary>
         /// For VS designer
         /// </summary>
@@ -157,7 +154,6 @@ namespace GitUI.CommandsDialogs
         {
             InitializeComponent();
             Translate();
-            _timerToDelayOnactivated.Interval = 1;
         }
 
         public FormBrowse(GitUICommands aCommands, string filter)
@@ -245,8 +241,6 @@ namespace GitUI.CommandsDialogs
             _formBrowseMenuCommands = new FormBrowseMenuCommands(this, RevisionGrid);
             _formBrowseMenus = new FormBrowseMenus(menuStrip1);
             RevisionGrid.MenuCommands.MenuChanged += (sender, e) => _formBrowseMenus.OnMenuCommandsPropertyChanged();
-
-            _timerToDelayOnactivated.Tick += TimerToDelayOnactivatedOnTick;
         }
 
         private new void Translate()
@@ -3370,13 +3364,7 @@ namespace GitUI.CommandsDialogs
 
         private void FormBrowse_Activated(object sender, EventArgs e)
         {
-            _timerToDelayOnactivated.Start();
-        }
-
-        private void TimerToDelayOnactivatedOnTick(object sender, EventArgs eventArgs)
-        {
-            _timerToDelayOnactivated.Stop();
-            OnActivate();
+            this.InvokeAsync(OnActivate);
         }
 
         private void cherryPickSelectedDiffFileToolStripMenuItem_Click(object sender, EventArgs e)
