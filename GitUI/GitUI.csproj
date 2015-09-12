@@ -48,7 +48,7 @@
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>..\FxCopRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -170,6 +170,8 @@
     <Compile Include="CommandsDialogs\SettingsDialog\EditorHelper.cs" />
     <Compile Include="Editor\Diff\CombinedDiffHighlightService.cs" />
     <Compile Include="Editor\Diff\DiffHighlightService.cs" />
+    <Compile Include="Editor\Diff\DiffLineNumAnalyzer.cs" />
+    <Compile Include="Editor\Diff\DiffViewerLineNumberCtrl.cs" />
     <Compile Include="Editor\Diff\LinePrefixHelper.cs" />
     <Compile Include="Editor\Diff\LineSegmentGetter.cs" />
     <Compile Include="HelperDialogs\FormBuildServerCredentials.cs">
