@@ -4696,6 +4696,14 @@ This will initialize and update all submodules recursive.</source>
         <source>Push branches</source>
         <target />
       </trans-unit>
+      <trans-unit id="ckForcePushTagWithLease.Text">
+        <source>Force With &amp;Lease</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="ckForceWithLease.Text">
+        <source>Force With &amp;Lease</source>
+        <target />
+      </trans-unit>
       <trans-unit id="DeleteColumn.HeaderText">
         <source>Delete Remote Branch</source>
         <target />
