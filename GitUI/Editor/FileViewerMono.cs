@@ -104,7 +104,7 @@ namespace GitUI.Editor
             return TextEditor.Text;
         }
 
-        public void SetText(string text)
+        public void SetText(string text, bool isDiff = false)
         {
             TextEditor.Clear();
 
