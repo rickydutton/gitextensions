@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Windows.Forms;
 using GitCommands;
 using GitCommands.Repository;
 using GitCommands.Utils;
+using GitExtUtils;
 using GitUI.CommandsDialogs.BrowseDialog;
 using GitUI.CommandsDialogs.BrowseDialog.DashboardControl;
 using GitUI.Hotkey;
@@ -202,6 +204,7 @@ namespace GitUI.CommandsDialogs
             }
             RevisionGrid.SelectionChanged += RevisionGridSelectionChanged;
             DiffText.ExtraDiffArgumentsChanged += DiffTextExtraDiffArgumentsChanged;
+            DiffText.OnViewLineOnGitHub = OnViewLineOnGitHub;
             _filterRevisionsHelper.SetFilter(filter);
             DiffText.SetFileLoader(getNextPatchFile);
 
@@ -1732,6 +1735,7 @@ namespace GitUI.CommandsDialogs
             }
 
             IList<GitRevision> items = RevisionGrid.GetSelectedRevisions();
+            var onlyOneRevisionSelected = items.Count == 1;
             if (items.Count() == 1)
             {
                 items.Add(new GitRevision(Module, DiffFiles.SelectedItemParent));
@@ -1747,11 +1751,12 @@ namespace GitUI.CommandsDialogs
                         diffOfConflict = Strings.GetUninterestingDiffOmitted();
                     }
 
-                    DiffText.ViewPatch(diffOfConflict);
+                    DiffText.ViewPatch(diffOfConflict, canViewLineOnGitHubForThisRevision: items.Count == 1);
                     return;
                 }
             }
-            DiffText.ViewChanges(items, DiffFiles.SelectedItem, String.Empty);
+            DiffText.ViewChanges(items, DiffFiles.SelectedItem, String.Empty,
+                canViewLineOnGitHubForThisRevision: onlyOneRevisionSelected);
         }
 
         private void ChangelogToolStripMenuItemClick(object sender, EventArgs e)
@@ -3428,6 +3433,14 @@ namespace GitUI.CommandsDialogs
                     components.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void OnViewLineOnGitHub(string githubLineUrlFormat)
+        {
+            var url = string.Format(githubLineUrlFormat,
+                RevisionGrid.GetSelectedRevisions().Last().Guid,
+                MD5.Create().GetMd5HashString(DiffFiles.SelectedItem.Name));
+            Process.Start(url);
         }
     }
 }

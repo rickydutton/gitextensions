@@ -339,6 +339,11 @@ namespace GitUI.Editor
             _findAndReplaceForm.SetFileLoader(fileLoader);
         }
 
+        public string GetDiffLineIdentity()
+        {
+            return _lineNumbersControl.GetLineDesc(this.LineAtCaret + 1);
+        }
+
         #endregion
     }
 }

@@ -32,6 +32,7 @@
             this.treatAllFilesAsTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showNonprintableCharactersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.goToLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewThisLineOnGitHubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileviewerToolbar = new GitUI.ToolStripEx();
             this.nextChangeButton = new System.Windows.Forms.ToolStripButton();
             this.previousChangeButton = new System.Windows.Forms.ToolStripButton();
@@ -66,9 +67,10 @@
             this.toolStripSeparator2,
             this.treatAllFilesAsTextToolStripMenuItem,
             this.showNonprintableCharactersToolStripMenuItem,
-            this.goToLineToolStripMenuItem});
+            this.goToLineToolStripMenuItem,
+            this.viewThisLineOnGitHubToolStripMenuItem});
             this.contextMenu.Name = "ContextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(244, 324);
+            this.contextMenu.Size = new System.Drawing.Size(244, 346);
             // 
             // copyToolStripMenuItem
             // 
@@ -173,6 +175,13 @@
             this.goToLineToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.goToLineToolStripMenuItem.Text = "Go to line";
             this.goToLineToolStripMenuItem.Click += new System.EventHandler(this.goToLineToolStripMenuItem_Click);
+            // 
+            // viewThisLineOnGitHubToolStripMenuItem
+            // 
+            this.viewThisLineOnGitHubToolStripMenuItem.Name = "viewThisLineOnGitHubToolStripMenuItem";
+            this.viewThisLineOnGitHubToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.viewThisLineOnGitHubToolStripMenuItem.Text = "View this line on GitHub";
+            this.viewThisLineOnGitHubToolStripMenuItem.Click += new System.EventHandler(this.viewThisLineOnGitHubToolStripMenuItem_Click);
             // 
             // fileviewerToolbar
             // 
@@ -345,5 +354,6 @@
         private System.Windows.Forms.ToolStripMenuItem copyNewVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyOldVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cherrypickSelectedLinesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewThisLineOnGitHubToolStripMenuItem;
     }
 }

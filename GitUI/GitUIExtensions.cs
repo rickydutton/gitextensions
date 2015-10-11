@@ -190,17 +190,20 @@ namespace GitUI
             return patch.Text;
         }
 
-        public static void ViewChanges(this FileViewer diffViewer, IList<GitRevision> revisions, GitItemStatus file, string defaultText)
+        public static void ViewChanges(this FileViewer diffViewer, IList<GitRevision> revisions,
+            GitItemStatus file, string defaultText, bool canViewLineOnGitHubForThisRevision = false)
         {
             var firstRevision = revisions.Count > 0 ? revisions[0] : null;
             string firstRevisionGuid = firstRevision == null ? null : firstRevision.Guid;
             string parentRevisionGuid = revisions.Count == 2 ? revisions[1].Guid : null;
             if (parentRevisionGuid == null && firstRevision != null && firstRevision.ParentGuids != null && firstRevision.ParentGuids.Length > 0)
                 parentRevisionGuid = firstRevision.ParentGuids[0];
-            ViewChanges(diffViewer, firstRevisionGuid, parentRevisionGuid, file, defaultText);
+            ViewChanges(diffViewer, firstRevisionGuid, parentRevisionGuid, file, defaultText,
+                canViewLineOnGitHubForThisRevision);
         }
 
-        public static void ViewChanges(this FileViewer diffViewer, string revision, string parentRevision, GitItemStatus file, string defaultText)
+        public static void ViewChanges(this FileViewer diffViewer, string revision, string parentRevision,
+            GitItemStatus file, string defaultText, bool canViewLineOnGitHubForThisRevision = false)
         {
             if (parentRevision == null)
             {
@@ -218,7 +221,7 @@ namespace GitUI
                     {
                         string selectedPatch = diffViewer.GetSelectedPatch(revision, parentRevision, file);
                         return selectedPatch ?? defaultText;
-                    });
+                    }, canViewLineOnGitHubForThisRevision);
             }
         }
 
