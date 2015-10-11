@@ -378,6 +378,11 @@ namespace GitUI.Editor
             // todo
         }
 
+        public string GetDiffLineIdentity()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }
