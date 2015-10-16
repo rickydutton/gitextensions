@@ -25,6 +25,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
         public Version CurrentVersion;
         public bool UpdateFound;
         public string UpdateUrl;
+        private string _releasePageUrl;
         public string NewVersion;
 
         public FormUpdates(Version currentVersion)
@@ -35,6 +36,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             progressBar1.Visible = true;
             CurrentVersion = currentVersion;
             UpdateUrl = "";
+            _releasePageUrl = "";
             NewVersion = "";
             progressBar1.Style = ProgressBarStyle.Marquee;
         }
@@ -101,12 +103,15 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             UpdateFound = CurrentVersion.ToString() != release.tag_name;
             if (UpdateFound)
             {
-                UpdateUrl = release.html_url;
+                _releasePageUrl = release.html_url;
+                const string downloadUrlFormat = "https://github.com/EbenZhang/gitextensions/releases/download/{0}/GitExtensions.msi";
+                UpdateUrl = string.Format(downloadUrlFormat, release.tag_name);
                 NewVersion = release.tag_name;
                 Done();
             }
             else
             {
+                _releasePageUrl = "";
                 UpdateUrl = "";
                 Done();
             }
@@ -136,7 +141,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 
         private void linkChangeLog_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(UpdateUrl);
+            Process.Start(_releasePageUrl);
         }
 
         private void btnDownloadNow_Click(object sender, EventArgs e)
