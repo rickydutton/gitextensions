@@ -7652,6 +7652,10 @@ When OpenSSH is used, command line dialogs are shown!
         <source>{0} {1:day|days} ago</source>
         <target />
       </trans-unit>
+      <trans-unit id="_useForceWithLeaseInstead.Text">
+        <source>Force push may overwrite other people's change. Do you want to use the safer force with lease instead?</source>
+        <target />
+      </trans-unit>
       <trans-unit id="_hoursAgo.Text">
         <source>{0} {1:hour|hours} ago</source>
         <target />

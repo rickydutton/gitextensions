@@ -274,6 +274,26 @@ namespace GitUI.CommandsDialogs
                     }
                 }
 
+                if (ForcePushBranches.Checked)
+                {
+                    if (GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
+                    {
+                        var choice = MessageBox.Show(this,
+                            Strings.GetTextForUseForceWithLeaseInstead(),
+                            "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1);
+                        switch (choice)
+                        {
+                            case DialogResult.Yes:
+                                ForcePushBranches.Checked = false;
+                                ckForceWithLease.Checked = true;
+                                break;
+                            case DialogResult.Cancel:
+                                return false;
+                        }
+                    }
+                }
+
                 if (_NO_TRANSLATE_Branch.Text == AllRefs)
                 {
                     pushCmd = Module.PushAllCmd(destination, GetForcePushOption(), track,

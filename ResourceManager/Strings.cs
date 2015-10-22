@@ -94,6 +94,11 @@ namespace ResourceManager
             return Instance._loadingData.Text;
         }
 
+        public static string GetTextForUseForceWithLeaseInstead()
+        {
+            return Instance._useForceWithLeaseInstead.Text;
+        }
+
         private readonly TranslationString _dateText       = new TranslationString("Date");
         private readonly TranslationString _authorText     = new TranslationString("Author");
         private readonly TranslationString _authorDateText = new TranslationString("Author date");
@@ -106,6 +111,8 @@ namespace ResourceManager
         private readonly TranslationString _currentUnstagedChanges = new TranslationString("Current unstaged changes");
         private readonly TranslationString _currentIndex   = new TranslationString("Commit index");
         private readonly TranslationString _loadingData    = new TranslationString("Loading data...");
+        private readonly TranslationString _useForceWithLeaseInstead = 
+            new TranslationString("Force push may overwrite other people's change. Do you want to use the safer force with lease instead?");
 
 
         public static string GetNSecondsAgoText(int value)
