@@ -78,13 +78,16 @@ namespace GitUI.CommandsDialogs
             if (!GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
             {
                 ckForceWithLease.Visible = false;
-                ckForcePushTagWithLease.Visible = false;
+                ForcePushTags.DataBindings.Add("Checked", ForcePushBranches, "Checked",
+                    formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+            }
+            else
+            {
+                ForcePushTags.DataBindings.Add("Checked", ckForceWithLease, "Checked",
+                    formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
             }
 
-            ckForcePushTagWithLease.DataBindings.Add("Checked", ckForceWithLease, "Checked",
-                formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
-            ForcePushTags.DataBindings.Add("Checked", ForcePushBranches, "Checked",
-                formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+
             //can't be set in OnLoad, because after PushAndShowDialogWhenFailed()
             //they are reset to false
             if (aCommands != null)
