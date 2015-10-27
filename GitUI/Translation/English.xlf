@@ -4700,10 +4700,6 @@ This will initialize and update all submodules recursive.</source>
         <source>Push branches</source>
         <target />
       </trans-unit>
-      <trans-unit id="ckForcePushTagWithLease.Text">
-        <source>Force With &amp;Lease</source>
-        <target />
-      </trans-unit>
       <trans-unit id="ckForceWithLease.Text">
         <source>Force With &amp;Lease</source>
         <target />
@@ -7676,6 +7672,10 @@ When OpenSSH is used, command line dialogs are shown!
       </trans-unit>
       <trans-unit id="_daysAgo.Text">
         <source>{0} {1:day|days} ago</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="_useForceWithLeaseInstead.Text">
+        <source>Force push may overwrite other people's change. Do you want to use the safer force with lease instead?</source>
         <target />
       </trans-unit>
       <trans-unit id="_hoursAgo.Text">

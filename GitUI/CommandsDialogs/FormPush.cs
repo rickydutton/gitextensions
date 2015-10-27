@@ -78,13 +78,16 @@ namespace GitUI.CommandsDialogs
             if (!GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
             {
                 ckForceWithLease.Visible = false;
-                ckForcePushTagWithLease.Visible = false;
+                ForcePushTags.DataBindings.Add("Checked", ForcePushBranches, "Checked",
+                    formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+            }
+            else
+            {
+                ForcePushTags.DataBindings.Add("Checked", ckForceWithLease, "Checked",
+                    formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
             }
 
-            ckForcePushTagWithLease.DataBindings.Add("Checked", ckForceWithLease, "Checked",
-                formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
-            ForcePushTags.DataBindings.Add("Checked", ForcePushBranches, "Checked",
-                formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+
             //can't be set in OnLoad, because after PushAndShowDialogWhenFailed()
             //they are reset to false
             if (aCommands != null)
@@ -268,6 +271,26 @@ namespace GitUI.CommandsDialogs
                             return false;
 
                         track = result == DialogResult.Yes;
+                    }
+                }
+
+                if (ForcePushBranches.Checked)
+                {
+                    if (GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
+                    {
+                        var choice = MessageBox.Show(this,
+                            Strings.GetTextForUseForceWithLeaseInstead(),
+                            "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1);
+                        switch (choice)
+                        {
+                            case DialogResult.Yes:
+                                ForcePushBranches.Checked = false;
+                                ckForceWithLease.Checked = true;
+                                break;
+                            case DialogResult.Cancel:
+                                return false;
+                        }
                     }
                 }
 

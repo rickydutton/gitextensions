@@ -38,7 +38,6 @@
             this._NO_TRANSLATE_Branch = new System.Windows.Forms.ComboBox();
             this.TagTab = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.ckForcePushTagWithLease = new System.Windows.Forms.CheckBox();
             this.ForcePushTags = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.TagComboBox = new System.Windows.Forms.ComboBox();
@@ -322,7 +321,6 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.ckForcePushTagWithLease);
             this.groupBox3.Controls.Add(this.ForcePushTags);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.TagComboBox);
@@ -333,16 +331,6 @@
             this.groupBox3.TabIndex = 23;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Tag";
-            // 
-            // ckForcePushTagWithLease
-            // 
-            this.ckForcePushTagWithLease.AutoSize = true;
-            this.ckForcePushTagWithLease.Location = new System.Drawing.Point(267, 50);
-            this.ckForcePushTagWithLease.Name = "ckForcePushTagWithLease";
-            this.ckForcePushTagWithLease.Size = new System.Drawing.Size(115, 19);
-            this.ckForcePushTagWithLease.TabIndex = 23;
-            this.ckForcePushTagWithLease.Text = "Force With &Lease";
-            this.ckForcePushTagWithLease.UseVisualStyleBackColor = true;
             // 
             // ForcePushTags
             // 
@@ -634,6 +622,5 @@
         private System.Windows.Forms.ComboBox RecursiveSubmodules;
         private UserControls.FolderBrowserButton folderBrowserButton1;
         private System.Windows.Forms.CheckBox ckForceWithLease;
-        private System.Windows.Forms.CheckBox ckForcePushTagWithLease;
     }
 }
