@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using GitCommands;
 using GitCommands.Git;
 using GitUI.CommandsDialogs;
+using GitUI.HelperDialogs;
 
 namespace GitUI.UserControls
 {
@@ -168,7 +169,7 @@ namespace GitUI.UserControls
                 {
                     return new RemoteRepoNode(tree, parentPath);
                 }
-                return new RemoteBranchPathNode(tree, parentPath);
+                return new BasePathNode(tree, parentPath);
             }
 
             protected override void FillTreeViewNode()
@@ -215,7 +216,7 @@ namespace GitUI.UserControls
             internal override void OnSelected()
             {
                 base.OnSelected();
-                UICommands.BrowseRepo.GoToRef(FullPath, true);
+                SelectRevision();
             }
 
             /// <summary>Download updates from the remote branch.</summary>
@@ -279,7 +280,10 @@ namespace GitUI.UserControls
             {
                 var remoteBranchInfo = GetRemoteBranchInfo();
                 var cmd = new GitDeleteRemoteBranchCmd(remoteBranchInfo.Remote, remoteBranchInfo.BranchName);
-                UICommands.StartCommandLineProcessDialog(cmd, null);
+                if (MessageBoxes.ConfirmDeleteRemoteBranch(TreeViewNode.TreeView, remoteBranchInfo.BranchName, remoteBranchInfo.Remote))
+                {
+                    UICommands.StartCommandLineProcessDialog(cmd, null);
+                }
             }
 
             public void Checkout()
@@ -294,18 +298,29 @@ namespace GitUI.UserControls
             {
                 Checkout();
             }
-        }
 
-        sealed class RemoteBranchPathNode : BaseBranchNode
-        {
-            public RemoteBranchPathNode(Tree aTree, string aFullPath) : base(aTree, aFullPath)
+            public void Merge()
             {
+                using (var form = new FormMergeBranch(UICommands, FullPath))
+                {
+                    form.ShowDialog(TreeViewNode.TreeView);
+                }
             }
 
-            protected override void ApplyStyle()
+            public void Rebase()
             {
-                base.ApplyStyle();
-                TreeViewNode.ImageKey = TreeViewNode.SelectedImageKey = "folder.png";
+                using (var form = new FormRebase(UICommands, FullPath))
+                {
+                    form.ShowDialog(TreeViewNode.TreeView);
+                }
+            }
+
+            public void Reset()
+            {
+                using (var form = new FormResetCurrentBranch(UICommands, new GitRevision(Module, FullPath)))
+                {
+                    form.ShowDialog(TreeViewNode.TreeView);
+                }
             }
         }
 
