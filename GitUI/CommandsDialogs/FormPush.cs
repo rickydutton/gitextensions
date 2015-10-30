@@ -62,7 +62,10 @@ namespace GitUI.CommandsDialogs
         private readonly TranslationString _pullActionMerge = new TranslationString("merge");
         private readonly TranslationString _pullRepositoryCaption = new TranslationString("Push was rejected from \"{0}\"");
         private readonly TranslationString _dontShowAgain = new TranslationString("Remember my decision.");
-
+        private readonly TranslationString _useForceWithLeaseInstead =
+            new TranslationString("Force push may overwrite other people's change. Do you want to use the safer force with lease instead?");
+        private readonly TranslationString _forceWithLeaseTooltips =
+            new TranslationString("Force with lease is a safer way to force push, it ensures you don't overwrite other's work.");
         #endregion
 
         private FormPush()
@@ -85,6 +88,7 @@ namespace GitUI.CommandsDialogs
             {
                 ForcePushTags.DataBindings.Add("Checked", ckForceWithLease, "Checked",
                     formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+                toolTip1.SetToolTip(ckForceWithLease, _forceWithLeaseTooltips.Text);
             }
 
 
@@ -279,7 +283,7 @@ namespace GitUI.CommandsDialogs
                     if (GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
                     {
                         var choice = MessageBox.Show(this,
-                            Strings.GetTextForUseForceWithLeaseInstead(),
+                            _useForceWithLeaseInstead.Text,
                             "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
                             MessageBoxDefaultButton.Button1);
                         switch (choice)

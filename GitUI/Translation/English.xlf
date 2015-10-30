@@ -4861,6 +4861,14 @@ Are you sure you want to push this branch?</source>
         <source>Yes</source>
         <target />
       </trans-unit>
+      <trans-unit id="_useForceWithLeaseInstead.Text">
+        <source>Force push may overwrite other people's change. Do you want to use the safer force with lease instead?</source>
+        <target />
+      </trans-unit>
+      <trans-unit id="_forceWithLeaseTooltips.Text">
+        <source>Force with lease is a safer way to force push, it ensures you don't overwrite other's work</source>
+        <target />
+      </trans-unit>
       <trans-unit id="groupBox1.Text">
         <source>Branch</source>
         <target />
@@ -7676,10 +7684,6 @@ When OpenSSH is used, command line dialogs are shown!
       </trans-unit>
       <trans-unit id="_daysAgo.Text">
         <source>{0} {1:day|days} ago</source>
-        <target />
-      </trans-unit>
-      <trans-unit id="_useForceWithLeaseInstead.Text">
-        <source>Force push may overwrite other people's change. Do you want to use the safer force with lease instead?</source>
         <target />
       </trans-unit>
       <trans-unit id="_hoursAgo.Text">

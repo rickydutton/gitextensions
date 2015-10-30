@@ -19,17 +19,18 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.PushToUrl = new System.Windows.Forms.RadioButton();
             this.PushToRemote = new System.Windows.Forms.RadioButton();
+            this.ckForceWithLease = new System.Windows.Forms.CheckBox();
             this.Push = new System.Windows.Forms.Button();
             this.TabControlTagBranch = new System.Windows.Forms.TabControl();
             this.BranchTab = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ShowOptions = new System.Windows.Forms.LinkLabel();
             this.PushOptionsPanel = new System.Windows.Forms.Panel();
+            this.ForcePushOptionPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
             this.RecursiveSubmodules = new System.Windows.Forms.ComboBox();
             this.ReplaceTrackingReference = new System.Windows.Forms.CheckBox();
-            this.ckForceWithLease = new System.Windows.Forms.CheckBox();
             this.ForcePushBranches = new System.Windows.Forms.CheckBox();
             this._createPullRequestCB = new System.Windows.Forms.CheckBox();
             this.labelTo = new System.Windows.Forms.Label();
@@ -52,15 +53,16 @@
             this.DeleteColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.LoadSSHKey = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this._NO_TRANSLATE_Remotes = new System.Windows.Forms.ComboBox();
-            this.AddRemote = new System.Windows.Forms.Button();
-            this.PushDestination = new System.Windows.Forms.ComboBox();
             this.folderBrowserButton1 = new GitUI.UserControls.FolderBrowserButton();
+            this.PushDestination = new System.Windows.Forms.ComboBox();
+            this.AddRemote = new System.Windows.Forms.Button();
+            this._NO_TRANSLATE_Remotes = new System.Windows.Forms.ComboBox();
             this.Pull = new System.Windows.Forms.Button();
             this.TabControlTagBranch.SuspendLayout();
             this.BranchTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.PushOptionsPanel.SuspendLayout();
+            this.ForcePushOptionPanel.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.TagTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -94,6 +96,18 @@
             this.PushToRemote.Text = "Remote";
             this.toolTip1.SetToolTip(this.PushToRemote, "Remote repository to push to");
             this.PushToRemote.UseVisualStyleBackColor = true;
+            // 
+            // ckForceWithLease
+            // 
+            this.ckForceWithLease.AutoSize = true;
+            this.ckForceWithLease.Location = new System.Drawing.Point(0, 3);
+            this.ckForceWithLease.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.ckForceWithLease.Name = "ckForceWithLease";
+            this.ckForceWithLease.Size = new System.Drawing.Size(115, 19);
+            this.ckForceWithLease.TabIndex = 3;
+            this.ckForceWithLease.Text = "Force With &Lease";
+            this.ckForceWithLease.UseVisualStyleBackColor = true;
+            this.ckForceWithLease.CheckedChanged += new System.EventHandler(this.ForceWithLeaseCheckedChanged);
             // 
             // Push
             // 
@@ -173,16 +187,39 @@
             this.PushOptionsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.PushOptionsPanel.Controls.Add(this.ForcePushOptionPanel);
             this.PushOptionsPanel.Controls.Add(this.flowLayoutPanel1);
             this.PushOptionsPanel.Controls.Add(this.ReplaceTrackingReference);
-            this.PushOptionsPanel.Controls.Add(this.ckForceWithLease);
-            this.PushOptionsPanel.Controls.Add(this.ForcePushBranches);
             this.PushOptionsPanel.Controls.Add(this._createPullRequestCB);
             this.PushOptionsPanel.Location = new System.Drawing.Point(9, 46);
             this.PushOptionsPanel.Name = "PushOptionsPanel";
             this.PushOptionsPanel.Size = new System.Drawing.Size(587, 77);
             this.PushOptionsPanel.TabIndex = 25;
             this.PushOptionsPanel.Visible = false;
+            // 
+            // ForcePushOptionPanel
+            // 
+            this.ForcePushOptionPanel.AutoSize = true;
+            this.ForcePushOptionPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ForcePushOptionPanel.Controls.Add(this.ckForceWithLease);
+            this.ForcePushOptionPanel.Controls.Add(this.ForcePushBranches);
+            this.ForcePushOptionPanel.Location = new System.Drawing.Point(32, 8);
+            this.ForcePushOptionPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ForcePushOptionPanel.Name = "ForcePushOptionPanel";
+            this.ForcePushOptionPanel.Size = new System.Drawing.Size(199, 25);
+            this.ForcePushOptionPanel.TabIndex = 28;
+            // 
+            // ForcePushBranches
+            // 
+            this.ForcePushBranches.AutoSize = true;
+            this.ForcePushBranches.Location = new System.Drawing.Point(115, 3);
+            this.ForcePushBranches.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.ForcePushBranches.Name = "ForcePushBranches";
+            this.ForcePushBranches.Size = new System.Drawing.Size(84, 19);
+            this.ForcePushBranches.TabIndex = 3;
+            this.ForcePushBranches.Text = "&Force Push";
+            this.ForcePushBranches.UseVisualStyleBackColor = true;
+            this.ForcePushBranches.CheckedChanged += new System.EventHandler(this.ForcePushBranchesCheckedChanged);
             // 
             // flowLayoutPanel1
             // 
@@ -231,28 +268,6 @@
             this.ReplaceTrackingReference.TabIndex = 25;
             this.ReplaceTrackingReference.Text = "Replace tracking reference";
             this.ReplaceTrackingReference.UseVisualStyleBackColor = true;
-            // 
-            // ckForceWithLease
-            // 
-            this.ckForceWithLease.AutoSize = true;
-            this.ckForceWithLease.Location = new System.Drawing.Point(144, 10);
-            this.ckForceWithLease.Name = "ckForceWithLease";
-            this.ckForceWithLease.Size = new System.Drawing.Size(115, 19);
-            this.ckForceWithLease.TabIndex = 3;
-            this.ckForceWithLease.Text = "Force With &Lease";
-            this.ckForceWithLease.UseVisualStyleBackColor = true;
-            this.ckForceWithLease.CheckedChanged += new System.EventHandler(this.ForceWithLeaseCheckedChanged);
-            // 
-            // ForcePushBranches
-            // 
-            this.ForcePushBranches.AutoSize = true;
-            this.ForcePushBranches.Location = new System.Drawing.Point(32, 10);
-            this.ForcePushBranches.Name = "ForcePushBranches";
-            this.ForcePushBranches.Size = new System.Drawing.Size(84, 19);
-            this.ForcePushBranches.TabIndex = 3;
-            this.ForcePushBranches.Text = "&Force Push";
-            this.ForcePushBranches.UseVisualStyleBackColor = true;
-            this.ForcePushBranches.CheckedChanged += new System.EventHandler(this.ForcePushBranchesCheckedChanged);
             // 
             // _createPullRequestCB
             // 
@@ -565,6 +580,8 @@
             this.groupBox1.PerformLayout();
             this.PushOptionsPanel.ResumeLayout(false);
             this.PushOptionsPanel.PerformLayout();
+            this.ForcePushOptionPanel.ResumeLayout(false);
+            this.ForcePushOptionPanel.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.TagTab.ResumeLayout(false);
@@ -622,5 +639,6 @@
         private System.Windows.Forms.ComboBox RecursiveSubmodules;
         private UserControls.FolderBrowserButton folderBrowserButton1;
         private System.Windows.Forms.CheckBox ckForceWithLease;
+        private System.Windows.Forms.FlowLayoutPanel ForcePushOptionPanel;
     }
 }
