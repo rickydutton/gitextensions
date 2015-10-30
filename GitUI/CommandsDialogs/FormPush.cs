@@ -62,7 +62,10 @@ namespace GitUI.CommandsDialogs
         private readonly TranslationString _pullActionMerge = new TranslationString("merge");
         private readonly TranslationString _pullRepositoryCaption = new TranslationString("Push was rejected from \"{0}\"");
         private readonly TranslationString _dontShowAgain = new TranslationString("Remember my decision.");
-
+        private readonly TranslationString _useForceWithLeaseInstead =
+            new TranslationString("Force push may overwrite other people's change. Do you want to use the safer force with lease instead?");
+        private readonly TranslationString _forceWithLeaseTooltips =
+            new TranslationString("Force with lease is a safer way to force push, it ensures you don't overwrite other's work.");
         #endregion
 
         private FormPush()
@@ -74,6 +77,20 @@ namespace GitUI.CommandsDialogs
         {
             InitializeComponent();
             Translate();
+
+            if (!GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
+            {
+                ckForceWithLease.Visible = false;
+                ForcePushTags.DataBindings.Add("Checked", ForcePushBranches, "Checked",
+                    formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+            }
+            else
+            {
+                ForcePushTags.DataBindings.Add("Checked", ckForceWithLease, "Checked",
+                    formattingEnabled: false, updateMode: DataSourceUpdateMode.OnPropertyChanged);
+                toolTip1.SetToolTip(ckForceWithLease, _forceWithLeaseTooltips.Text);
+            }
+
 
             //can't be set in OnLoad, because after PushAndShowDialogWhenFailed()
             //they are reset to false
@@ -115,7 +132,7 @@ namespace GitUI.CommandsDialogs
             else
                 _NO_TRANSLATE_Remotes.Text = _currentBranchRemote;
             RemotesUpdated(null, null);
-            
+
             if (AppSettings.AlwaysShowAdvOpt)
                 ShowOptions_LinkClicked(null, null);
         }
@@ -159,7 +176,7 @@ namespace GitUI.CommandsDialogs
         }
 
         private bool IsBranchKnownToRemote(string remote, string branch)
-        { 
+        {
             var refs = Module.GetRefs(true, true);
 
             var remoteRefs = refs.Where(r => r.IsRemote && r.LocalName == branch && r.Remote == remote);
@@ -261,15 +278,35 @@ namespace GitUI.CommandsDialogs
                     }
                 }
 
+                if (ForcePushBranches.Checked)
+                {
+                    if (GitCommandHelpers.VersionInUse.SupportPushForceWithLease)
+                    {
+                        var choice = MessageBox.Show(this,
+                            _useForceWithLeaseInstead.Text,
+                            "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question,
+                            MessageBoxDefaultButton.Button1);
+                        switch (choice)
+                        {
+                            case DialogResult.Yes:
+                                ForcePushBranches.Checked = false;
+                                ckForceWithLease.Checked = true;
+                                break;
+                            case DialogResult.Cancel:
+                                return false;
+                        }
+                    }
+                }
+
                 if (_NO_TRANSLATE_Branch.Text == AllRefs)
                 {
-                    pushCmd = Module.PushAllCmd(destination, ForcePushBranches.Checked, track,
+                    pushCmd = Module.PushAllCmd(destination, GetForcePushOption(), track,
                         RecursiveSubmodules.SelectedIndex);
                 }
                 else
                 {
                     pushCmd = Module.PushCmd(destination, _NO_TRANSLATE_Branch.Text, RemoteBranch.Text,
-                        ForcePushBranches.Checked, track, RecursiveSubmodules.SelectedIndex);
+                        GetForcePushOption(), track, RecursiveSubmodules.SelectedIndex);
                 }
             }
             else if (TabControlTagBranch.SelectedTab == TagTab)
@@ -282,7 +319,7 @@ namespace GitUI.CommandsDialogs
                     pushAllTags = true;
                 }
                 pushCmd = GitCommandHelpers.PushTagCmd(destination, tag, pushAllTags,
-                                                       ForcePushBranches.Checked);
+                                                       GetForcePushOption());
             }
             else
             {
@@ -331,6 +368,19 @@ namespace GitUI.CommandsDialogs
             }
 
             return false;
+        }
+
+        private ForcePushOptions GetForcePushOption()
+        {
+            if (ForcePushBranches.Checked)
+            {
+                return ForcePushOptions.Force;
+            }
+            if (ckForceWithLease.Checked)
+            {
+                return ForcePushOptions.ForceWithLease;
+            }
+            return ForcePushOptions.DoNotForce;
         }
 
 
@@ -673,12 +723,10 @@ namespace GitUI.CommandsDialogs
 
         private void ForcePushBranchesCheckedChanged(object sender, EventArgs e)
         {
-            ForcePushTags.Checked = ForcePushBranches.Checked;
-        }
-
-        private void ForcePushTagsCheckedChanged(object sender, EventArgs e)
-        {
-            ForcePushBranches.Checked = ForcePushTags.Checked;
+            if (ForcePushBranches.Checked)
+            {
+                ckForceWithLease.Checked = false;
+            }
         }
 
         #region Multi-Branch Methods
@@ -860,6 +908,14 @@ namespace GitUI.CommandsDialogs
                     components.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void ForceWithLeaseCheckedChanged(object sender, EventArgs e)
+        {
+            if (ckForceWithLease.Checked)
+            {
+                ForcePushBranches.Checked = false;
+            }
         }
     }
 }
