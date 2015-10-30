@@ -561,7 +561,7 @@ namespace GitCommands
 
         public static bool AutoStash
         {
-            get { return GetBool("autostash", true); }
+            get { return GetBool("autostash", false); }
             set { SetBool("autostash", value); }
         }
 
