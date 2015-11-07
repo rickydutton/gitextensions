@@ -12,14 +12,14 @@ using System.ComponentModel;
 
 namespace GitUI.Editor
 {
-    public partial class FileViewerWindows : GitExtensionsControl, IFileViewer
+    public partial class FileViewerInternal : GitExtensionsControl, IFileViewer
     {
         private readonly FindAndReplaceForm _findAndReplaceForm = new FindAndReplaceForm();
         private DiffHighlightService _diffHighlightService = DiffHighlightService.Instance;
         private readonly DiffViewerLineNumberCtrl _lineNumbersControl;
         private readonly DiffLineNumAnalyzer _diffLineNumAnalyzer = new DiffLineNumAnalyzer();
 
-        public FileViewerWindows()
+        public FileViewerInternal()
         {
             InitializeComponent();
             Translate();
