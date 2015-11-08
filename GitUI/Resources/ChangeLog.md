@@ -1,4 +1,4 @@
-﻿Changelog
+Changelog
 =========
 ### Version 2.49 (no due date)
 * Cherry pick selected file/selected lines
