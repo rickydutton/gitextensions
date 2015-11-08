@@ -2,7 +2,9 @@
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+#if !__MonoCS__
 using Cyotek.ApplicationServices.Windows.Forms;
+#endif
 using GitCommands;
 using GitCommands.Utils;
 using GitUI;
@@ -39,11 +41,12 @@ namespace GitExtensions
 
                     AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
                     Application.ThreadException += NBug.Handler.ThreadException;
-
+#if !__MonoCS__
                     if (!InternetExplorerBrowserEmulation.IsBrowserEmulationSet())
                     {
                         InternetExplorerBrowserEmulation.SetBrowserEmulationVersion();
                     }
+#endif
                 }
                 catch (TypeInitializationException tie)
                 {
