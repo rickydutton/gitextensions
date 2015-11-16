@@ -3370,7 +3370,7 @@ namespace GitUI.CommandsDialogs
             }
             catch (Exception) { }
 
-            Process.Start(@"https://github.com/gitextensions/gitextensions/issues/new?body=" + WebUtility.HtmlEncode(issueData));
+            Process.Start(@"https://github.com/EbenZhang/gitextensions/issues/new?body=" + WebUtility.HtmlEncode(issueData));
         }
         private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
