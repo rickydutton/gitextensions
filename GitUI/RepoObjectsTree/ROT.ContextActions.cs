@@ -84,6 +84,11 @@ RegisterClick<StashNode>(mnubtnStashDrop, stash => stash.Delete());
             RegisterClick<RemoteBranchNode>(mnubtnMergeBranch, remoteBranch => remoteBranch.Merge());
             RegisterClick<RemoteBranchNode>(mnubtnRebase, remoteBranch => remoteBranch.Rebase());
             RegisterClick<RemoteBranchNode>(mnubtnReset, remoteBranch => remoteBranch.Reset());
+            RegisterClick<RemoteBranchNode>(mnubtnRemoteBranchFetchAndCheckout, b =>
+            {
+                b.Fetch();
+                b.Checkout();
+            });
             Node.RegisterContextMenu(typeof(RemoteBranchNode), menuRemote);
 
             RegisterClick<RemoteRepoNode>(mnubtnRemoteFetch, remoteBranch => remoteBranch.Fetch());
@@ -92,6 +97,7 @@ RegisterClick<StashNode>(mnubtnStashDrop, stash => stash.Delete());
 
             RegisterClick<TagNode>(mnubtnCreateBranchForTag, tag => tag.CreateBranch());
             RegisterClick<TagNode>(mnubtnDeleteTag, tag => tag.Delete());
+            RegisterClick<TagNode>(mnuBtnCheckTag, tag => tag.Checkout());
             Node.RegisterContextMenu(typeof(TagNode), menuTag);
 
             RegisterClick(mnuBtnManageRemotesFromRootNode, PopupManageRemotesForm);
@@ -101,8 +107,28 @@ RegisterClick<StashNode>(mnubtnStashDrop, stash => stash.Delete());
         {
             using (var form = new FormRemotes(UICommands))
             {
+                form.OnRemoteDeleted += OnRemoteDeleted;
+                form.OnRemoteRenamedOrAdded += OnRemoteRenamedOrAdded;
                 form.ShowDialog(this);
             }
+        }
+
+        private void OnRemoteRenamedOrAdded(string orgName, string newName)
+        {
+            if (_remoteTree == null)
+            {
+                return;
+            }
+            _remoteTree.RenameOrAddRemote(orgName, newName);
+        }
+
+        private void OnRemoteDeleted(string remoteName)
+        {
+            if (_remoteTree == null)
+            {
+                return;
+            }
+            _remoteTree.DeleteRemote(remoteName);
         }
     }
 }
