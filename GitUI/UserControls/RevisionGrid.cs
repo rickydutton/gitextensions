@@ -90,6 +90,8 @@ namespace GitUI
         private readonly NavigationHistory _navigationHistory = new NavigationHistory();
         private AuthorEmailBasedRevisionHighlighting _revisionHighlighting;
 
+        private GitRevision _baseCommitToCompare = null;
+
         public RevisionGrid()
         {
             InitLayout();
@@ -156,6 +158,7 @@ namespace GitUI
             {
                 SetRevisionsLayout(RevisionGridLayout.SmallWithGraph);
             }
+            compareToBaseToolStripMenuItem.Enabled = false;
         }
 
         private void FillMenuFromMenuCommands(IEnumerable<MenuCommand> menuCommands, ToolStripMenuItem targetMenuItem)
@@ -3053,17 +3056,16 @@ namespace GitUI
 
         private void CompareToBranchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selectedCommit = this.GetSelectedRevisions().First();
-            using (var form = new FormCompareToBranch(UICommands, selectedCommit.Guid))
+            var headCommit = this.GetSelectedRevisions().First();
+            using (var form = new FormCompareToBranch(UICommands, headCommit.Guid))
             {
-                form.Owner = this.ParentForm;
-                if (form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog(this) == DialogResult.OK)
                 {
-                    var branchRevision = Module.RevParse(form.BranchName);
-                    using (var diffForm = new FormDiff(UICommands, this, branchRevision, selectedCommit.Guid,
-                        form.BranchName, selectedCommit.Message))
+                    var baseCommit = Module.RevParse(form.BranchName);
+                    using (var diffForm = new FormDiff(UICommands, this, baseCommit, headCommit.Guid,
+                        form.BranchName, headCommit.Message))
                     {
-                        diffForm.ShowDialog(ParentForm);
+                        diffForm.ShowDialog(this);
                     }
                 }
             }
@@ -3071,14 +3073,29 @@ namespace GitUI
 
         private void CompareWithCurrentBranchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var selectedCommit = this.GetSelectedRevisions().First();
-            var currentBranch = Module.GetSelectedBranch();
-            var rightRevision = Module.RevParse(currentBranch);
-            using (var diffForm = new FormDiff(UICommands, this, selectedCommit.Guid, rightRevision,
-                selectedCommit.Message, currentBranch))
+            var baseCommit = this.GetSelectedRevisions().First();
+            var headBranch = Module.GetSelectedBranch();
+            var headBranchName = Module.RevParse(headBranch);
+            using (var diffForm = new FormDiff(UICommands, this, baseCommit.Guid, headBranchName,
+                baseCommit.Message, headBranch))
             {
-                diffForm.Owner = this.ParentForm;
-                diffForm.ShowDialog();
+                diffForm.ShowDialog(this);
+            }
+        }
+
+        private void selectAsBaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _baseCommitToCompare = GetSelectedRevisions().First();
+            compareToBaseToolStripMenuItem.Enabled = true;
+        }
+
+        private void compareToBaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var headCommit = GetSelectedRevisions().First();
+            using (var diffForm = new FormDiff(UICommands, this, _baseCommitToCompare.Guid, headCommit.Guid,
+                _baseCommitToCompare.Message, headCommit.Message))
+            {
+                diffForm.ShowDialog(this);
             }
         }
     }
