@@ -1,4 +1,5 @@
 
+using System.Windows.Forms;
 using GitUI.RevisionGridClasses;
 
 namespace GitUI
@@ -101,6 +102,7 @@ namespace GitUI
             this.renameBranchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.compareToBranchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.compareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compareWithCurrentBranchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compareToBaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectAsBaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -266,10 +268,7 @@ namespace GitUI
             this.renameBranchToolStripMenuItem,
             this.deleteBranchToolStripMenuItem,
             this.toolStripSeparator4,
-            this.compareToBranchToolStripMenuItem,
-            this.compareWithCurrentBranchToolStripMenuItem,
-            this.selectAsBaseToolStripMenuItem,
-            this.compareToBaseToolStripMenuItem,
+            this.compareToolStripMenuItem,
             this.toolStripSeparator5,
             this.createTagToolStripMenuItem,
             this.deleteTagToolStripMenuItem,
@@ -474,6 +473,7 @@ namespace GitUI
             this.selectAsBaseToolStripMenuItem.Name = "selectAsBaseToolStripMenuItem";
             this.selectAsBaseToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.selectAsBaseToolStripMenuItem.Text = "Select as BASE to compare";
+            this.selectAsBaseToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.L;
             this.selectAsBaseToolStripMenuItem.Click += new System.EventHandler(this.selectAsBaseToolStripMenuItem_Click);
             // 
             // selectAsBaseToolStripMenuItem
@@ -481,7 +481,21 @@ namespace GitUI
             this.compareToBaseToolStripMenuItem.Name = "compareToBaseToolStripMenuItem";
             this.compareToBaseToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.compareToBaseToolStripMenuItem.Text = "Compare to BASE";
+            this.compareToBaseToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.R;
             this.compareToBaseToolStripMenuItem.Click += new System.EventHandler(this.compareToBaseToolStripMenuItem_Click);
+            // 
+            // compareToolStripMenuItem
+            // 
+            this.compareToolStripMenuItem.Name = "compareToolStripMenuItem";
+            this.compareToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.compareToolStripMenuItem.Text = "Compare";
+            this.compareToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[]
+            {
+                compareToBranchToolStripMenuItem,
+                compareWithCurrentBranchToolStripMenuItem,
+                selectAsBaseToolStripMenuItem,
+                compareToBaseToolStripMenuItem,
+            });
             // 
             // toolStripSeparator5
             // 
@@ -824,6 +838,7 @@ namespace GitUI
         private System.Windows.Forms.DataGridViewTextBoxColumn IsMessageMultilineDataGridViewColumn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem compareToBranchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem compareToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compareWithCurrentBranchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compareToBaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectAsBaseToolStripMenuItem;

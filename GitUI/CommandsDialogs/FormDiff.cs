@@ -25,7 +25,7 @@ namespace GitUI.CommandsDialogs
         private readonly TranslationString anotherCommitTooltip =
             new TranslationString("Select another commit");
         private readonly TranslationString btnSwapTooltip =
-            new TranslationString("Swap BASE and HEAD");
+            new TranslationString("Swap BASE and Compare commits");
 
         public FormDiff(GitUICommands aCommands, RevisionGrid revisionGrid, string baseCommitSha,
             string headCommitSha, string baseCommitDisplayStr, string headCommitDisplayStr) : base(aCommands)
@@ -83,8 +83,9 @@ namespace GitUI.CommandsDialogs
                 DiffText.ViewPatch("");
                 return;
             }
+            var baseCommit = ckCompareToMergeBase.Checked ? _mergeBase : _baseRevision;
 
-            IList<GitRevision> items = new List<GitRevision> { _headRevision, _baseRevision };
+            IList<GitRevision> items = new List<GitRevision> { _headRevision, baseCommit };
             if (items.Count() == 1)
                 items.Add(new GitRevision(Module, DiffFiles.SelectedItemParent));
             DiffText.ViewChanges(items, DiffFiles.SelectedItem, String.Empty);
