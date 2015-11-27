@@ -1728,7 +1728,6 @@ namespace GitUI.CommandsDialogs
                 return;
 
             SelectedDiff.Clear();
-            var fileNames = Unstaged.SelectedItems.Select(item => item.Name).ToArray();
 
             bool wereErrors;
             Module.AssumeUnchangedFiles(Unstaged.SelectedItems.ToList(), true, out wereErrors);
@@ -1742,7 +1741,6 @@ namespace GitUI.CommandsDialogs
                 return;
 
             SelectedDiff.Clear();
-            var fileNames = Unstaged.SelectedItems.Select(item => item.Name).ToArray();
 
             bool wereErrors;
             Module.AssumeUnchangedFiles(Unstaged.SelectedItems.ToList(), false, out wereErrors);

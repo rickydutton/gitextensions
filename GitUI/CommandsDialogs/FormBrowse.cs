@@ -147,7 +147,9 @@ namespace GitUI.CommandsDialogs
         private string _diffTabPageTitleBase = "";
 
         private readonly FormBrowseMenus _formBrowseMenus;
+#pragma warning disable 0414
         private readonly FormBrowseMenuCommands _formBrowseMenuCommands;
+#pragma warning restore 0414
 
         /// <summary>
         /// For VS designer
@@ -241,7 +243,7 @@ namespace GitUI.CommandsDialogs
             FillBuildReport();  // Ensure correct page visibility
             RevisionGrid.ShowBuildServerInfo = true;
 
-            _formBrowseMenuCommands = new FormBrowseMenuCommands(this, RevisionGrid);
+            _formBrowseMenuCommands = new FormBrowseMenuCommands(this);
             _formBrowseMenus = new FormBrowseMenus(menuStrip1);
             RevisionGrid.MenuCommands.MenuChanged += (sender, e) => _formBrowseMenus.OnMenuCommandsPropertyChanged();
         }

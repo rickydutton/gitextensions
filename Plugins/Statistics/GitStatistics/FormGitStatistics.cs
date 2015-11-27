@@ -54,7 +54,9 @@ namespace GitStatistics
         public DirectoryInfo WorkingDir { get; set; }
         private readonly SynchronizationContext _syncContext;
         private LineCounter _lineCounter;
+#pragma warning disable 0414
         private Task _loadThread;
+#pragma warning restore 0414
         private readonly IGitModule _module;
 
         public FormGitStatistics(IGitModule aModule, string codeFilePattern, bool countSubmodule)
