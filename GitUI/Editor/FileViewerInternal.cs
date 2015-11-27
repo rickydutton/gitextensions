@@ -148,6 +148,7 @@ namespace GitUI.Editor
             if (isDiff)
             {
                 TextEditor.ShowLineNumbers = false;
+                _lineNumbersControl.SetVisibility(true);
                 var index = TextEditor.ActiveTextAreaControl.TextArea.LeftMargins.IndexOf(_lineNumbersControl);
                 if (index == -1)
                 {
@@ -168,11 +169,7 @@ namespace GitUI.Editor
             else
             {
                 TextEditor.ShowLineNumbers = true;
-                var index = TextEditor.ActiveTextAreaControl.TextArea.LeftMargins.IndexOf(_lineNumbersControl);
-                if (index != -1)
-                {
-                    TextEditor.ActiveTextAreaControl.TextArea.LeftMargins.RemoveAt(index);
-                }
+                _lineNumbersControl.SetVisibility(false);
             }
         }
 
