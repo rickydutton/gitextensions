@@ -25,6 +25,7 @@ using GitUI.Plugin;
 using GitUI.Properties;
 using GitUI.Script;
 using GitUIPluginInterfaces;
+using Microsoft.Win32;
 using ResourceManager;
 using Settings = GitCommands.AppSettings;
 #if !__MonoCS__
@@ -246,6 +247,7 @@ namespace GitUI.CommandsDialogs
             _formBrowseMenuCommands = new FormBrowseMenuCommands(this);
             _formBrowseMenus = new FormBrowseMenus(menuStrip1);
             RevisionGrid.MenuCommands.MenuChanged += (sender, e) => _formBrowseMenus.OnMenuCommandsPropertyChanged();
+            SystemEvents.SessionEnding += (sender, args) => SaveApplicationSettings();
         }
 
         private new void Translate()
@@ -1608,6 +1610,12 @@ namespace GitUI.CommandsDialogs
         private void FormBrowseFormClosing(object sender, FormClosingEventArgs e)
         {
             SaveUserMenuPosition();
+            SaveApplicationSettings();
+        }
+
+        private static void SaveApplicationSettings()
+        {
+            Properties.Settings.Default.Save();
         }
 
         private void SaveUserMenuPosition()
