@@ -1117,7 +1117,7 @@ namespace GitCommands
             revision.MessageEncoding = lines[9];
             if (shortFormat)
             {
-                revision.Message = ReEncodeCommitMessage(lines[10], revision.MessageEncoding);
+                revision.Subject = ReEncodeCommitMessage(lines[10], revision.MessageEncoding);
             }
             else
             {
@@ -1125,7 +1125,7 @@ namespace GitCommands
 
                 //commit message is not reencoded by git when format is given
                 revision.Body = ReEncodeCommitMessage(message, revision.MessageEncoding);
-                revision.Message = revision.Body.Substring(0, revision.Body.IndexOfAny(new[] { '\r', '\n' }));
+                revision.Subject = revision.Body.Substring(0, revision.Body.IndexOfAny(new[] { '\r', '\n' }));
             }
 
             return revision;

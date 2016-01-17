@@ -19,6 +19,7 @@ namespace GitUI.Editor
         private DiffHighlightService _diffHighlightService = DiffHighlightService.Instance;
         private readonly DiffViewerLineNumberCtrl _lineNumbersControl;
         private readonly DiffLineNumAnalyzer _diffLineNumAnalyzer = new DiffLineNumAnalyzer();
+        private bool _isGotoLineUIApplicable = true;
 
         public FileViewerInternal()
         {
@@ -142,9 +143,6 @@ namespace GitUI.Editor
         {
             _lineNumbersControl.Clear();
 
-            TextEditor.Text = text;
-            TextEditor.Refresh();
-
             if (isDiff)
             {
                 TextEditor.ShowLineNumbers = false;
@@ -158,6 +156,18 @@ namespace GitUI.Editor
                 _diffHighlightService = DiffHighlightService.IsCombinedDiff(text)
                     ? CombinedDiffHighlightService.Instance
                     : DiffHighlightService.Instance;
+            }
+            else
+            {
+                TextEditor.ShowLineNumbers = true;
+                _lineNumbersControl.SetVisibility(false);
+            }
+
+            TextEditor.Text = text;
+            _isGotoLineUIApplicable = !isDiff;
+
+            if (isDiff)
+            {
                 _diffLineNumAnalyzer.StartAsync(text, () =>
                 {
                     if (TextEditor != null && !TextEditor.Disposing && TextEditor.Visible)
@@ -166,11 +176,8 @@ namespace GitUI.Editor
                     }
                 });
             }
-            else
-            {
-                TextEditor.ShowLineNumbers = true;
-                _lineNumbersControl.SetVisibility(false);
-            }
+
+            TextEditor.Refresh();
         }
 
         public void SetHighlighting(string syntax)
@@ -299,6 +306,11 @@ namespace GitUI.Editor
         public void GoToLine(int lineNumber)
         {
             TextEditor.ActiveTextAreaControl.Caret.Position = new TextLocation(0, lineNumber);
+        }
+
+        public bool IsGotoLineUIApplicable()
+        {
+            return _isGotoLineUIApplicable;
         }
 
         public int LineAtCaret

@@ -5,8 +5,9 @@ Changelog
 * Added an option to remember the ignore-white-spaces preference for all the diff viewers
 * Fixed an intermittent bug where ObjectDisposedException occurs on launch
 * Fixed a bug where branch filter throws null reference exception when no repository selected
-* Support combined diff for merge commit
 * Fixed a bug where unable to restore the windows after minimized by Win+M or Win+D when multiple instances of GitExtensions are running
+* Support combined diff for merge commit
+* Support showing the real line number for diff
 
 ### Version 2.48.05 (16 May 2015)
 * Fixed issue #2493: StartBrowseDialog failed after clone
