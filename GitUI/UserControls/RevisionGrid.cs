@@ -3072,7 +3072,7 @@ namespace GitUI
                 {
                     var baseCommit = Module.RevParse(form.BranchName);
                     using (var diffForm = new FormDiff(UICommands, this, baseCommit, headCommit.Guid,
-                        form.BranchName, headCommit.Message))
+                        form.BranchName, headCommit.Subject))
                     {
                         diffForm.ShowDialog(this);
                     }
@@ -3086,7 +3086,7 @@ namespace GitUI
             var headBranch = Module.GetSelectedBranch();
             var headBranchName = Module.RevParse(headBranch);
             using (var diffForm = new FormDiff(UICommands, this, baseCommit.Guid, headBranchName,
-                baseCommit.Message, headBranch))
+                baseCommit.Subject, headBranch))
             {
                 diffForm.ShowDialog(this);
             }
@@ -3102,7 +3102,7 @@ namespace GitUI
         {
             var headCommit = GetSelectedRevisions().First();
             using (var diffForm = new FormDiff(UICommands, this, _baseCommitToCompare.Guid, headCommit.Guid,
-                _baseCommitToCompare.Message, headCommit.Message))
+                _baseCommitToCompare.Subject, headCommit.Subject))
             {
                 diffForm.ShowDialog(this);
             }
