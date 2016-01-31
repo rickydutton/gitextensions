@@ -100,7 +100,20 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 
         void CheckForNewerVersion(GitHubReleaseInfo release)
         {
-            UpdateFound = CurrentVersion.ToString() != release.tag_name;
+            Version newVersion = null;
+            try
+            {
+                newVersion = new Version(release.tag_name);
+            }
+            catch { }
+            if (newVersion == null)
+            {
+                UpdateFound = false;
+            }
+            else
+            {
+                UpdateFound = CurrentVersion < new Version(release.tag_name);
+            }
             if (UpdateFound)
             {
                 _releasePageUrl = release.html_url;
