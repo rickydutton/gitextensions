@@ -117,7 +117,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             if (UpdateFound)
             {
                 _releasePageUrl = release.html_url;
-                const string downloadUrlFormat = "https://github.com/EbenZhang/gitextensions/releases/download/{0}/GitExtensions.msi";
+                const string downloadUrlFormat = "https://github.com/EbenZhang/gitextensions/releases/download/{0}/GitExtensions-{0}-Setup.msi";
                 UpdateUrl = string.Format(downloadUrlFormat, release.tag_name);
                 NewVersion = release.tag_name;
                 Done();
