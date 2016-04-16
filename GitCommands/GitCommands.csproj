@@ -85,6 +85,7 @@
     <Compile Include="FileHelper.cs" />
     <Compile Include="Git\AuthorEmailEqualityComparer.cs" />
     <Compile Include="Git\GitDeleteRemoteBranchCmd.cs" />
+    <Compile Include="Git\IGitRevisionProvider.cs" />
     <Compile Include="Logging\CommandLogEntry.cs" />
     <Compile Include="RemoteActionResult.cs" />
     <Compile Include="Settings\BasicSettingTypes.cs" />
