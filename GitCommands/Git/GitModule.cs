@@ -83,7 +83,7 @@ namespace GitCommands
     /// <summary>Provides manipulation with git module.
     /// <remarks>Several instances may be created for submodules.</remarks></summary>
     [DebuggerDisplay("GitModule ( {_workingDir} )")]
-    public sealed class GitModule : IGitModule
+    public sealed class GitModule : IGitModule, IGitRevisionProvider
     {
         /// <summary>'/' : ref path separator</summary>
         public const char RefSeparator = '/';
