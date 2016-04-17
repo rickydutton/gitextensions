@@ -34,6 +34,7 @@ namespace GitUI.CommandsDialogs
             : base(aCommands)
         {
             InitializeComponent();
+            chkPreserveMerges.Checked = true;
             Translate();
             helpImageDisplayUserControl1.Visible = !AppSettings.DontShowHelpImages;
             helpImageDisplayUserControl1.IsOnHoverShowImage2NoticeText = _hoverShowImageLabelText.Text;
@@ -109,7 +110,8 @@ namespace GitUI.CommandsDialogs
                 Mergetool.Enabled = false;
                 Skip.Enabled = false;
                 Abort.Enabled = false;
-                chkStash.Enabled = Module.IsDirtyDir(); ;
+                chkStash.Enabled = Module.IsDirtyDir();
+                chkStash.Checked = true;
             }
 
             SolveMergeconflicts.Visible = Module.InTheMiddleOfConflictedMerge();
@@ -208,7 +210,7 @@ namespace GitUI.CommandsDialogs
             }
             else
             {
-                rebaseCmd = GitCommandHelpers.RebaseCmd(Branches.Text, chkInteractive.Checked, 
+                rebaseCmd = GitCommandHelpers.RebaseCmd(Branches.Text, chkInteractive.Checked,
                                                         chkPreserveMerges.Checked, chkAutosquash.Checked,
                                                         chkStash.Checked);
             }
