@@ -79,6 +79,7 @@ namespace GitUI
         private int _rowHeigth;
         public event EventHandler<GitModuleEventArgs> GitModuleChanged;
         public event EventHandler<DoubleClickRevisionEventArgs> DoubleClickRevision;
+        public Action OnToggleLeftPanelRequested;
 
         private readonly RevisionGridMenuCommands _revisionGridMenuCommands;
 
@@ -454,6 +455,11 @@ namespace GitUI
             {
                 SetSelectedRevision(_navigationHistory.NavigateForward());
             }
+        }
+
+        private void ToggleLeftPanel()
+        {
+            OnToggleLeftPanelRequested();
         }
 
         private void FindNextMatch(int startIndex, string searchString, bool reverse)
@@ -2906,7 +2912,8 @@ namespace GitUI
             NavigateBackward,
             NavigateForward,
             SelectAsBaseToCompare,
-            CompareToBase
+            CompareToBase,
+            ToggleLeftPanel,
         }
 
         protected override bool ExecuteCommand(int cmd)
@@ -2936,6 +2943,7 @@ namespace GitUI
                 case Commands.NavigateForward: NavigateForward(); break;
                 case Commands.SelectAsBaseToCompare: selectAsBaseToolStripMenuItem_Click(null, null); break;
                 case Commands.CompareToBase: compareToBaseToolStripMenuItem_Click(null, null); break;
+                case Commands.ToggleLeftPanel: ToggleLeftPanel(); break;
                 default:
                     {
                         bool result = base.ExecuteCommand(cmd);

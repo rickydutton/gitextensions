@@ -27,6 +27,7 @@ using GitUI.Script;
 using GitUIPluginInterfaces;
 using Microsoft.Win32;
 using ResourceManager;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 using Settings = GitCommands.AppSettings;
 #if !__MonoCS__
 using Microsoft.WindowsAPICodePack.Taskbar;
@@ -188,6 +189,7 @@ namespace GitUI.CommandsDialogs
             Task.Factory.StartNew(PluginLoader.Load)
                 .ContinueWith((task) => RegisterPlugins(), TaskScheduler.FromCurrentSynchronizationContext());
             RevisionGrid.GitModuleChanged += SetGitModule;
+            RevisionGrid.OnToggleLeftPanelRequested = () => toggleLeftPanel_Click(null, null);
             _filterRevisionsHelper = new FilterRevisionsHelper(toolStripTextBoxFilter, toolStripDropDownButton1, RevisionGrid, toolStripLabel2, this);
             _filterBranchHelper = new FilterBranchHelper(toolStripBranches, toolStripDropDownButton2, RevisionGrid);
             Translate();
@@ -3451,6 +3453,11 @@ namespace GitUI.CommandsDialogs
                 RevisionGrid.GetSelectedRevisions().Last().Guid,
                 MD5.Create().GetMd5HashString(DiffFiles.SelectedItem.Name));
             Process.Start(url);
+        }
+
+        private void toggleLeftPanel_Click(object sender, EventArgs e)
+        {
+            MainSplitContainer.Panel1Collapsed = !MainSplitContainer.Panel1Collapsed;
         }
     }
 }
