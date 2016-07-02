@@ -11,8 +11,8 @@ using GitUI.HelperDialogs;
 namespace GitUI.Blame
 {
     public sealed partial class BlameControl : GitModuleControl
-    {
-        private GitBlame _blame;
+    { 
+        private GitBlame _blame; 
         private GitBlameLine _lastBlameLine = new GitBlameLine();
         private GitBlameLine _clickedBlameLine = new GitBlameLine();
         private RevisionGrid _revGrid;
@@ -23,7 +23,7 @@ namespace GitUI.Blame
         public BlameControl()
         {
             InitializeComponent();
-            Translate();
+            Translate(); 
 
             BlameCommitter.IsReadOnly = true;
             BlameCommitter.EnableScrollBars(false);
