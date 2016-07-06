@@ -221,6 +221,7 @@ namespace GitUI.CommandsDialogs
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.cherryPickSelectedDiffFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 #if !__MonoCS__ || Mono212Released //waiting for mono 2.12
+            this.toolStripMenuItemReflog = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.toolPanel)).BeginInit();
 #endif
             this.toolPanel.Panel1.SuspendLayout();
@@ -1534,6 +1535,7 @@ namespace GitUI.CommandsDialogs
             this.archiveToolStripMenuItem,
             this.checkoutToolStripMenuItem,
             this.bisectToolStripMenuItem,
+            this.toolStripMenuItemReflog,
             this.toolStripSeparator22,
             this.formatPatchToolStripMenuItem,
             this.applyPatchToolStripMenuItem,
@@ -2029,6 +2031,13 @@ namespace GitUI.CommandsDialogs
             this.cherryPickSelectedDiffFileToolStripMenuItem.Text = "Cherry pick file's changes";
             this.cherryPickSelectedDiffFileToolStripMenuItem.Click += new System.EventHandler(this.cherryPickSelectedDiffFileToolStripMenuItem_Click);
             // 
+            // toolStripMenuItemReflog
+            // 
+            this.toolStripMenuItemReflog.Name = "toolStripMenuItemReflog";
+            this.toolStripMenuItemReflog.Size = new System.Drawing.Size(254, 26);
+            this.toolStripMenuItemReflog.Text = "Show reflog...";
+            this.toolStripMenuItemReflog.Click += new System.EventHandler(this.toolStripMenuItemReflog_Click);
+            // 
             // FormBrowse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -2295,5 +2304,6 @@ namespace GitUI.CommandsDialogs
         private ToolStripMenuItem gitcommandLogToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator7;
         private ToolStripMenuItem cherryPickSelectedDiffFileToolStripMenuItem;
+        private ToolStripMenuItem toolStripMenuItemReflog;
     }
 }

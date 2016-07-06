@@ -3474,5 +3474,15 @@ namespace GitUI.CommandsDialogs
         {
             MainSplitContainer.Panel1Collapsed = !MainSplitContainer.Panel1Collapsed;
         }
+
+        private void toolStripMenuItemReflog_Click(object sender, EventArgs e)
+        {
+            var formReflog = new FormReflog(this.UICommands, "HEAD");
+            formReflog.ShowDialog();
+            if (formReflog.ShouldRefresh)
+            {
+                RefreshRevisions();
+            }
+        }
     }
 }
