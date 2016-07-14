@@ -155,6 +155,7 @@ namespace GitUI.CommandsDialogs
         private string _diffTabPageTitleBase = "";
 
         private readonly FormBrowseMenus _formBrowseMenus;
+        ConEmuControl terminal = null;
 #pragma warning disable 0414
         private readonly FormBrowseMenuCommands _formBrowseMenuCommands;
 #pragma warning restore 0414
@@ -1877,6 +1878,7 @@ namespace GitUI.CommandsDialogs
             }
 
             SetGitModule(this, new GitModuleEventArgs(module));
+            ChangeTerminalActiveFolder(path);
         }
 
         private void HistoryItemMenuClick(object sender, EventArgs e)
@@ -3521,7 +3523,6 @@ namespace GitUI.CommandsDialogs
 		    tabpage.ImageKey = sImageKey; // After adding page
 
 		    // Delay-create the terminal window when the tab is first selected
-		    ConEmuControl terminal = null;
 		    CommitInfoTabControl.Selecting += (sender, args) =>
 		    {
 			    if(args.TabPage != tabpage)
@@ -3562,6 +3563,33 @@ namespace GitUI.CommandsDialogs
 			    terminal.Start(startinfo);
 		    };
 	    }
+
+        public void ChangeTerminalActiveFolder(string path)
+        {
+            if (terminal == null || terminal.RunningSession == null || string.IsNullOrWhiteSpace(path))
+                return;
+
+            string posixPath;
+            if (TryConvertWindowsPathToPosix(path, out posixPath))
+            {
+                //Clear terminal line
+                for (int i = 0; i < 10000; i++)
+                {
+                    terminal.RunningSession.WriteInputText("\b");
+                }
+                terminal.RunningSession.WriteInputText(@"cd " + posixPath + Environment.NewLine);
+            }
+        }
+
+        private bool TryConvertWindowsPathToPosix(string path, out string posixPath)
+        {
+            posixPath = null;
+            var directoryInfo = new DirectoryInfo(path);
+            if (!directoryInfo.Exists)
+                return false;
+            posixPath = "/" + directoryInfo.FullName.Replace(@"\", "/").Remove(1, 1);
+            return true;
+        }
 
         /// <summary>
         /// Clean up any resources being used.
