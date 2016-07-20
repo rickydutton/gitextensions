@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -18,7 +19,7 @@ namespace GitUI.Editor.Diff
 
         public DiffViewerLineNumberCtrl(TextArea textArea) : base(textArea)
         {
-            DiffLines = new Dictionary<int, DiffLineNum>();
+            DiffLines = new ConcurrentDictionary<int, DiffLineNum>();
         }
 
         public override Size Size
@@ -112,7 +113,7 @@ namespace GitUI.Editor.Diff
             }
         }
 
-        private Dictionary<int, DiffLineNum> DiffLines { get; set; }
+        private ConcurrentDictionary<int, DiffLineNum> DiffLines { get; set; }
 
         public void AddDiffLineNum(DiffLineNum diffLineNum)
         {
