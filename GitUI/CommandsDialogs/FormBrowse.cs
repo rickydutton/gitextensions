@@ -160,6 +160,7 @@ namespace GitUI.CommandsDialogs
         {
             InitializeComponent();
             Translate();
+            RecoverSplitterContainerLayout();
         }
 
         public FormBrowse(GitUICommands aCommands, string filter)
@@ -250,6 +251,8 @@ namespace GitUI.CommandsDialogs
             _formBrowseMenus = new FormBrowseMenus(menuStrip1);
             RevisionGrid.MenuCommands.MenuChanged += (sender, e) => _formBrowseMenus.OnMenuCommandsPropertyChanged();
             SystemEvents.SessionEnding += (sender, args) => SaveApplicationSettings();
+
+            RecoverSplitterContainerLayout();
         }
 
         private new void Translate()
@@ -3458,6 +3461,13 @@ namespace GitUI.CommandsDialogs
         private void toggleLeftPanel_Click(object sender, EventArgs e)
         {
             MainSplitContainer.Panel1Collapsed = !MainSplitContainer.Panel1Collapsed;
+        }
+
+        private void RecoverSplitterContainerLayout()
+        {
+            var settings = Properties.Settings.Default;
+            FileTreeSplitContainer.SplitterDistance = settings.FormBrowse_FileTreeSplitContainer_SplitterDistance;
+            DiffSplitContainer.SplitterDistance = settings.FormBrowse_DiffSplitContainer_SplitterDistance;
         }
     }
 }
