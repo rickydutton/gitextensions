@@ -37,8 +37,8 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,6 +51,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>..\FxCopRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <NoWarn>1573</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -63,6 +64,10 @@
     <CodeAnalysisRuleSet>..\FxCopRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConEmu.WinForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=00340228797aafb8, processorArchitecture=MSIL">
+      <HintPath>..\packages\ConEmu.Control.WinForms.1.0.20160313.1\lib\net40\ConEmu.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PSTaskDialog">
@@ -165,11 +170,15 @@
     <Compile Include="CommandsDialogs\FormDiff.Designer.cs">
       <DependentUpon>FormDiff.cs</DependentUpon>
     </Compile>
+    <Compile Include="CommandsDialogs\FormSparseWorkingCopyViewModel.cs" />
     <Compile Include="CommandsDialogs\FormMergeSubmodule.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CommandsDialogs\FormMergeSubmodule.Designer.cs">
       <DependentUpon>FormMergeSubmodule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommandsDialogs\FormSparseWorkingCopy.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="CommandsDialogs\RepoHosting\CreatePullRequestForm.cs">
       <SubType>Form</SubType>
@@ -204,6 +213,19 @@
       <DependentUpon>CommitDialogSettingsPage.cs</DependentUpon>
     </Compile>
     <Compile Include="CommandsDialogs\SettingsDialog\EditorHelper.cs" />
+    <Compile Include="CommandsDialogs\SettingsDialog\AutoLayoutSettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CommandsDialogs\SettingsDialog\AutoLayoutSettingsPage.Designer.cs">
+      <DependentUpon>AutoLayoutSettingsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CommandsDialogs\SettingsDialog\Pages\DetailedSettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CommandsDialogs\SettingsDialog\Pages\DetailedSettingsPage.Designer.cs">
+      <DependentUpon>DetailedSettingsPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormStatusOutputLog.cs" />
     <Compile Include="Editor\Diff\CombinedDiffHighlightService.cs" />
     <Compile Include="Editor\Diff\DiffHighlightService.cs" />
     <Compile Include="Editor\Diff\DiffLineNumAnalyzer.cs" />
@@ -285,6 +307,7 @@
     <Compile Include="UserControls\BranchSelector.Designer.cs">
       <DependentUpon>BranchSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ComboBoxHelper.cs" />
     <Compile Include="UserControls\CommitPickerSmallControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -298,6 +321,15 @@
       <DependentUpon>CommitSummaryUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="CommandsDialogs\CommitDialog\CommitTemplateItem.cs" />
+    <Compile Include="UserControls\ConsoleEmulatorOutputControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UserControls\ConsoleOutputControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UserControls\EditboxBasedConsoleOutputControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UserControls\ExListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -316,6 +348,7 @@
     <Compile Include="UserControls\RevisionGridClasses\NavigationHistory.cs" />
     <Compile Include="UserControls\RevisionGridClasses\ParentChildNavigationHistory.cs" />
     <Compile Include="UserControls\AuthorEmailBasedRevisionHighlighting.cs" />
+    <Compile Include="UserControls\TextEventArgs.cs" />
     <Compile Include="UserControls\WebBrowserCtrl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1087,6 +1120,7 @@
     <Compile Include="UserControls\WarningToolStripItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="WebBrowserEmulationMode.cs" />
     <Compile Include="WindowPositionList.cs" />
     <Compile Include="CommandsDialogs\CommitDialog\WordWrapper.cs" />
   </ItemGroup>
@@ -1129,6 +1163,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CommandsDialogs\SettingsDialog\Pages\CommitDialogSettingsPage.resx">
       <DependentUpon>CommitDialogSettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommandsDialogs\SettingsDialog\AutoLayoutSettingsPage.resx">
+      <DependentUpon>AutoLayoutSettingsPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CommandsDialogs\SettingsDialog\RepoDistSettingsPage.resx">
+      <DependentUpon>RepoDistSettingsPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelperDialogs\FormBuildServerCredentials.resx">
       <DependentUpon>FormBuildServerCredentials.cs</DependentUpon>
@@ -2033,4 +2073,11 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" />
+  <Import Project="..\packages\ConEmu.Core.16.7.10.0\build\ConEmu.Core.Targets" Condition="Exists('..\packages\ConEmu.Core.16.7.10.0\build\ConEmu.Core.Targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ConEmu.Core.16.7.10.0\build\ConEmu.Core.Targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ConEmu.Core.16.7.10.0\build\ConEmu.Core.Targets'))" />
+  </Target>
 </Project>

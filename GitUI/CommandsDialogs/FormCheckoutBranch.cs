@@ -7,10 +7,12 @@ using GitCommands;
 using GitCommands.Git;
 using ResourceManager;
 using System.Drawing;
+using GitUI.Script;
 using GitCommands.Utils;
 
 namespace GitUI.CommandsDialogs
 {
+
     public partial class FormCheckoutBranch : GitModuleForm
     {
         #region Translation
@@ -256,7 +258,8 @@ namespace GitUI.CommandsDialogs
             }
 
             LocalChangesAction changes = ChangesMode;
-            if (chkSetLocalChangesActionAsDefault.Checked)
+            if (changes != LocalChangesAction.Reset &&
+                chkSetLocalChangesActionAsDefault.Checked)
             {
                 AppSettings.CheckoutBranchAction = changes;
             }
@@ -277,6 +280,8 @@ namespace GitUI.CommandsDialogs
                 if (stash)
                     UICommands.StashSave(owner, AppSettings.IncludeUntrackedFilesInAutoStash);
             }
+
+            ScriptManager.RunEventScripts(this, ScriptEvent.BeforeCheckout);
 
             if (UICommands.StartCommandLineProcessDialog(cmd, owner))
             {
@@ -307,6 +312,8 @@ namespace GitUI.CommandsDialogs
                 }
 
                 UICommands.UpdateSubmodules(this);
+
+                ScriptManager.RunEventScripts(this, ScriptEvent.AfterCheckout);
 
                 return DialogResult.OK;
             }
@@ -434,6 +441,15 @@ namespace GitUI.CommandsDialogs
         private void FormCheckoutBranch_Activated(object sender, EventArgs e)
         {
             Branches.Focus();
+        }
+
+        private void rbReset_CheckedChanged(object sender, EventArgs e)
+        {
+            chkSetLocalChangesActionAsDefault.Enabled = !rbReset.Checked;
+            if (rbReset.Checked)
+            {
+                chkSetLocalChangesActionAsDefault.Checked = false;
+            }
         }
     }
 }

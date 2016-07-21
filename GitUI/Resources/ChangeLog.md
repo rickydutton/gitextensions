@@ -8,6 +8,7 @@ Changelog
 * Fixed a bug where unable to restore the windows after minimized by Win+M or Win+D when multiple instances of GitExtensions are running
 * Support combined diff for merge commit
 * Support showing the real line number for diff
+* Per repository plugins settings
 
 ### Version 2.48.05 (16 May 2015)
 * Fixed issue #2493: StartBrowseDialog failed after clone

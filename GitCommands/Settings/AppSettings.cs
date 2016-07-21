@@ -35,6 +35,9 @@ namespace GitCommands
         private static RepoDistSettings _SettingsContainer;
         public static RepoDistSettings SettingsContainer { get { return _SettingsContainer; } }
 
+        public static int BranchDropDownMinWidth = 300;
+        public static int BranchDropDownMaxWidth = 600;
+
         static AppSettings()
         {
             ApplicationDataPath = new Lazy<string>(() =>
@@ -715,6 +718,12 @@ namespace GitCommands
             set { SetBool("showindicatorformultilinemessage", value); }
         }
 
+        public static bool ShowAnnotatedTagsMessages
+        {
+            get { return GetBool("showannotatedtagsmessages", true); }
+            set { SetBool("showannotatedtagsmessages", value); }
+        }
+
         public static bool ShowMergeCommits
         {
             get { return GetBool("showmergecommits", true); }
@@ -725,6 +734,12 @@ namespace GitCommands
         {
             get { return GetBool("showtags", true); }
             set { SetBool("showtags", value); }
+        }
+
+        public static bool ShowIds
+        {
+            get { return GetBool("showids", false); }
+            set { SetBool("showids", value); }
         }
 
         public static int RevisionGraphLayout
@@ -938,13 +953,13 @@ namespace GitCommands
 
         public static Font CommitFont
         {
-            get { return GetFont("commitfont", new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.Size)); }
+            get { return GetFont("commitfont", new Font(SystemFonts.DialogFont.Name, SystemFonts.MessageBoxFont.Size)); }
             set { SetFont("commitfont", value); }
         }
 
         public static Font Font
         {
-            get { return GetFont("font", new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.Size)); }
+            get { return GetFont("font", new Font(SystemFonts.DialogFont.Name, SystemFonts.DefaultFont.Size)); }
             set { SetFont("font", value); }
         }
 
@@ -1176,6 +1191,12 @@ namespace GitCommands
         {
             get { return GetBool("OmitUninterestingDiff", false); }
             set { SetBool("OmitUninterestingDiff", value); }
+        }
+
+        public static bool UseConsoleEmulatorForCommands
+        {
+            get { return GetBool("UseConsoleEmulatorForCommands", true); }
+            set { SetBool("UseConsoleEmulatorForCommands", value); }
         }
 
         public static string GetGitExtensionsFullPath()

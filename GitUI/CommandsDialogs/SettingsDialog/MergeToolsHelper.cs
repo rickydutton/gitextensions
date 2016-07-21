@@ -171,8 +171,11 @@ namespace GitUI.CommandsDialogs.SettingsDialog
 
                     exeName = "kdiff3.exe";
 
-                    return FindFileInFolders(exeName, kdiff3path, @"KDiff3\",
-                                                          regkdiff3path);
+                    return FindFileInFolders(exeName, kdiff3path, @"KDiff3\", regkdiff3path);
+                case "p4merge":
+                    string p4mergepath = UnquoteString(GetGlobalSetting(settings, "difftool.p4merge.path"));
+                    exeName = "p4merge.exe";
+                    return FindFileInFolders(exeName, p4mergepath, @"Perforce\");
                 case "meld":
                     string difftoolMeldPath = UnquoteString(GetGlobalSetting(settings, "difftool.meld.path"));
                     string programFilesMeldPath = @"Meld\meld\";
@@ -375,7 +378,7 @@ namespace GitUI.CommandsDialogs.SettingsDialog
                 case "vsdiffmerge":
                     return "\"" + exeFile + "\" /m \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"";
             }
-            // other commands supported natively by msysgit
+            // other commands supported natively by git for windows
             return "";
         }
 

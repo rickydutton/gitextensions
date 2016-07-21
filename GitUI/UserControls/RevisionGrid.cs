@@ -145,10 +145,13 @@ namespace GitUI
             Revisions.DragEnter += Revisions_DragEnter;
             Revisions.DragDrop += Revisions_DragDrop;
             Revisions.AllowDrop = true;
+
             Revisions.ColumnHeadersVisible = false;
+            Revisions.IdColumn.Visible = AppSettings.ShowIds;
 
             IsMessageMultilineDataGridViewColumn.Width = 25;
             IsMessageMultilineDataGridViewColumn.DisplayIndex = 2;
+            IsMessageMultilineDataGridViewColumn.Resizable = DataGridViewTriState.False;
 
             this.HotkeysEnabled = true;
             try
@@ -209,6 +212,7 @@ namespace GitUI
                 _normalFont = value;
                 MessageDataGridViewColumn.DefaultCellStyle.Font = _normalFont;
                 DateDataGridViewColumn.DefaultCellStyle.Font = _normalFont;
+                IdDataGridViewColumn.DefaultCellStyle.Font = new Font("Consolas", _normalFont.SizeInPoints);
                 IsMessageMultilineDataGridViewColumn.DefaultCellStyle.Font = _normalFont;
 
                 RefsFont = IsFilledBranchesLayout() ? _normalFont : new Font(_normalFont, FontStyle.Bold);
@@ -555,12 +559,12 @@ namespace GitUI
                         revListArgs += "--grep=\"" + filter + "\" ";
                     else
                         inMemMessageFilter = filter;
-                if (parameters[1])
+                if (parameters[1] && !filter.IsNullOrWhiteSpace())
                     if (cmdLineSafe)
                         revListArgs += "--committer=\"" + filter + "\" ";
                     else
                         inMemCommitterFilter = filter;
-                if (parameters[2])
+                if (parameters[2] && !filter.IsNullOrWhiteSpace())
                     if (cmdLineSafe)
                         revListArgs += "--author=\"" + filter + "\" ";
                     else
@@ -599,6 +603,9 @@ namespace GitUI
 
         public override void Refresh()
         {
+            if (IsDisposed)
+                return;
+
             SetRevisionsLayout();
 
             base.Refresh();
@@ -1327,6 +1334,7 @@ namespace GitUI
             int messageColIndex = MessageDataGridViewColumn.Index;
             int authorColIndex = AuthorDataGridViewColumn.Index;
             int dateColIndex = DateDataGridViewColumn.Index;
+            int idColIndex = IdDataGridViewColumn.Index;
             int isMsgMultilineColIndex = IsMessageMultilineDataGridViewColumn.Index;
 
             // The graph column is handled by the DvcsGraph
@@ -1477,7 +1485,16 @@ namespace GitUI
                             if (superprojectRef != null)
                                 superprojectRefs.Remove(superprojectRef);
 
-                            offset = DrawRef(drawRefArgs, offset, gitRef.Name, headColor, arrowType, superprojectRef != null, true);
+                            string name = gitRef.Name;
+                            if ( gitRef.IsTag
+                                 && gitRef.IsDereference // see note on using IsDereference in CommitInfo class.
+                                 && AppSettings.ShowAnnotatedTagsMessages
+                                 && AppSettings.ShowIndicatorForMultilineMessage )
+                            {
+                                name = name + "  " + MultilineMessageIndicator;
+                            }
+
+                            offset = DrawRef(drawRefArgs, offset, name, headColor, arrowType, superprojectRef != null, true);
                         }
                     }
 
@@ -1555,6 +1572,15 @@ namespace GitUI
                     var text = TimeToString(time);
                     e.Graphics.DrawString(text, rowFont, foreBrush,
                                           new PointF(e.CellBounds.Left, e.CellBounds.Top + 4));
+                }
+                else if (columnIndex == idColIndex)
+                {
+                    if (!revision.IsArtificial())
+                    {
+                        var text = revision.Guid;
+                        e.Graphics.DrawString(text, new Font("Consolas", rowFont.SizeInPoints), foreBrush,
+                                              new PointF(e.CellBounds.Left, e.CellBounds.Top + 4));
+                    }
                 }
                 else if (columnIndex == BuildServerWatcher.BuildStatusImageColumnIndex)
                 {
@@ -1634,6 +1660,8 @@ namespace GitUI
             return offset;
         }
 
+        private static readonly string MultilineMessageIndicator = "[...]";
+
         private void RevisionsCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             var columnIndex = e.ColumnIndex;
@@ -1692,7 +1720,7 @@ namespace GitUI
 
                 if (revision.Body != null)
                 {
-                    e.Value = revision.Body.TrimEnd().Contains("\n") ? "[...]" : "";
+                    e.Value = revision.Body.TrimEnd().Contains("\n") ? MultilineMessageIndicator : "";
                 }
                 else
                 {
@@ -2755,6 +2783,14 @@ namespace GitUI
             Refresh();
         }
 
+        internal void ShowIds_ToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            AppSettings.ShowIds = !AppSettings.ShowIds;
+            Revisions.IdColumn.Visible = AppSettings.ShowIds;
+            _revisionGridMenuCommands.TriggerMenuChanged();
+            Refresh();
+        }
+
         public void ToggleRevisionCardLayout()
         {
             var layouts = new List<RevisionGridLayout>((RevisionGridLayout[])Enum.GetValues(typeof(RevisionGridLayout)));
@@ -3013,31 +3049,39 @@ namespace GitUI
         private void goToParentToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var r = GetRevision(LastRowIndex);
-
-            if (_parentChildNavigationHistory.HasPreviousParent)
-                _parentChildNavigationHistory.NavigateToPreviousParent(r.Guid);
-            else if (r.HasParent())
-                _parentChildNavigationHistory.NavigateToParent(r.Guid, r.ParentGuids[0]);
+            if (r != null)
+            {
+                if (_parentChildNavigationHistory.HasPreviousParent)
+                    _parentChildNavigationHistory.NavigateToPreviousParent(r.Guid);
+                else if (r.HasParent())
+                    _parentChildNavigationHistory.NavigateToParent(r.Guid, r.ParentGuids[0]);
+            }
         }
 
         private void goToChildToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var r = GetRevision(LastRowIndex);
-            var children = GetRevisionChildren(r.Guid);
+            if (r != null)
+            {
+                var children = GetRevisionChildren(r.Guid);
 
-            if (_parentChildNavigationHistory.HasPreviousChild)
-                _parentChildNavigationHistory.NavigateToPreviousChild(r.Guid);
-            else if (children.Any())
-                _parentChildNavigationHistory.NavigateToChild(r.Guid, children[0]);
+                if (_parentChildNavigationHistory.HasPreviousChild)
+                    _parentChildNavigationHistory.NavigateToPreviousChild(r.Guid);
+                else if (children.Any())
+                    _parentChildNavigationHistory.NavigateToChild(r.Guid, children[0]);
+            }
         }
 
         private void copyToClipboardToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            var revision = GetRevision(LastRowIndex);
-            CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(hashCopyToolStripMenuItem, CopyToClipboardMenuHelper.StrLimitWithElipses(revision.Guid, 15));
-            CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(messageCopyToolStripMenuItem, CopyToClipboardMenuHelper.StrLimitWithElipses(revision.Subject, 30));
-            CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(authorCopyToolStripMenuItem, revision.Author);
-            CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(dateCopyToolStripMenuItem, revision.CommitDate.ToString());
+            var r = GetRevision(LastRowIndex);
+            if (r != null)
+            {
+                CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(hashCopyToolStripMenuItem, CopyToClipboardMenuHelper.StrLimitWithElipses(r.Guid, 15));
+                CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(messageCopyToolStripMenuItem, CopyToClipboardMenuHelper.StrLimitWithElipses(r.Subject, 30));
+                CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(authorCopyToolStripMenuItem, r.Author);
+                CopyToClipboardMenuHelper.AddOrUpdateTextPostfix(dateCopyToolStripMenuItem, r.CommitDate.ToString());
+            }
         }
 
         public void GoToRef(string refName, bool showNoRevisionMsg)
@@ -3114,6 +3158,17 @@ namespace GitUI
             {
                 diffForm.ShowDialog(this);
             }
+        }
+
+        private void getHelpOnHowToUseTheseFeaturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenManual();
+        }
+
+        private void OpenManual()
+        {
+            string url = UserManual.UserManual.UrlFor("modify_history", "using-autosquash-rebase-feature");
+            OsShellUtil.OpenUrlInDefaultBrowser(url);
         }
     }
 }

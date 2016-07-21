@@ -16,6 +16,7 @@ namespace GitUI.Editor.Diff
 
         private int _maxValueOfLineNum;
         private bool _visible = true;
+        private Size lastSize = new Size(0, 0);
 
         public DiffViewerLineNumberCtrl(TextArea textArea) : base(textArea)
         {
@@ -26,25 +27,24 @@ namespace GitUI.Editor.Diff
         {
             get
             {
-                if (!DiffLines.Any() || !_visible)
+                if (!_visible)
                 {
-                    return new Size(0, 0);
+                    lastSize = new Size(0, 0);
+                } 
+                else if (DiffLines.Count > 0)
+                {
+                    var size = Graphics.FromHwnd(textArea.Handle).MeasureString(_maxValueOfLineNum.ToString(), textArea.Font);
+                    // Workaround that right most numbers get clipped when using mono.
+                    var monoTextWidthAdjustment = EnvUtils.IsMonoRuntime() ? 10 : 0;
+                    lastSize = new Size((int)size.Width * 2 + TextHorizontalMargin + monoTextWidthAdjustment, 0);
                 }
 
-                var size = Graphics.FromHwnd(textArea.Handle).MeasureString(_maxValueOfLineNum.ToString(), textArea.Font);
-                // Workaround that right most numbers get clipped when using mono.
-                var monoTextWidthAdjustment = EnvUtils.IsMonoRuntime()? 10 : 0;
-                return new Size((int)size.Width * 2 + TextHorizontalMargin + monoTextWidthAdjustment, 0);
+                return lastSize;
             }
         }
 
         public override void Paint(Graphics g, Rectangle rect)
         {
-            if (!DiffLines.Any())
-            {
-                return;
-            }
-
             var totalWidth = Size.Width;
             var leftWidth = (int)(totalWidth/2.0);
             var rightWidth = rect.Width - leftWidth;
@@ -122,8 +122,12 @@ namespace GitUI.Editor.Diff
             _maxValueOfLineNum = Math.Max(diffLineNum.LeftLineNum, diffLineNum.RightLineNum);
         }
 
-        public void Clear()
+        public void Clear(bool forDiff)
         {
+            if (!forDiff)
+            {
+                lastSize = new Size(0, 0);
+            }
             DiffLines.Clear();
         }
 

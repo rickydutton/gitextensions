@@ -9,6 +9,9 @@ namespace GitUI.Editor.Diff
     public class DiffLineNumAnalyzer
     {
         public delegate void EvLineNumAnalyzed(DiffLineNum diffLineNum);
+        private static Regex regex = new Regex(
+            @"\-(?<leftStart>\d{1,})\,{0,}(?<leftCount>\d{0,})\s\+(?<rightStart>\d{1,})\,{0,}(?<rightCount>\d{0,})",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         public event EvLineNumAnalyzed OnLineNumAnalyzed;
 
@@ -63,10 +66,6 @@ namespace GitUI.Editor.Diff
                         RightLineNum = DiffLineNum.NotApplicableLineNum,
                         Style = DiffLineNum.DiffLineStyle.Header
                     };
-                    var regex =
-                        new Regex(
-                            @"\-(?<leftStart>\d{1,})\,{0,}(?<leftCount>\d{0,})\s\+(?<rightStart>\d{1,})\,{0,}(?<rightCount>\d{0,})",
-                            RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                     var lineNumbers = regex.Match(line);
                     leftLineNum = int.Parse(lineNumbers.Groups["leftStart"].Value);

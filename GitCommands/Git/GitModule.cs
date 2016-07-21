@@ -98,6 +98,7 @@ namespace GitCommands
         public static string ActiveBranchIndicatorStr = ActiveBranchIndicator.ToString();
 
         private static readonly Regex DefaultHeadPattern = new Regex("refs/remotes/[^/]+/HEAD", RegexOptions.Compiled);
+        private static readonly Regex CpEncodingPattern = new Regex("cp\\d+", RegexOptions.Compiled);
         private readonly object _lock = new object();
 
         public GitModule(string workingdir)
@@ -216,6 +217,11 @@ namespace GitCommands
 
                 return _effectiveSettings;
             }
+        }
+
+        public ISettingsSource GetEffectiveSettings()
+        {
+            return EffectiveSettings;
         }
 
         private RepoDistSettings _distributedSettings;
@@ -407,7 +413,7 @@ namespace GitCommands
                 {
                     if (line.StartsWith("gitdir:"))
                     {
-                        string path = line.Substring(7).Trim().Replace('/', '\\');
+                        string path = line.Substring(7).Trim().ToNativePath();
                         if (Path.IsPathRooted(path))
                             return path.EnsureTrailingPathSeparator();
                         else
@@ -447,14 +453,14 @@ namespace GitCommands
 
         public bool HasSubmodules()
         {
-            return GetSubmodulesLocalPathes(recursive: false).Any();
+            return GetSubmodulesLocalPaths(recursive: false).Any();
         }
 
         /// <summary>
         /// This is a faster function to get the names of all submodules then the
         /// GetSubmodules() function. The command @git submodule is very slow.
         /// </summary>
-        public IList<string> GetSubmodulesLocalPathes(bool recursive = true)
+        public IList<string> GetSubmodulesLocalPaths(bool recursive = true)
         {
             var configFile = GetSubmoduleConfigFile();
             var submodules = configFile.ConfigSections.Select(configSection => configSection.GetPathValue("path").Trim()).ToList();
@@ -1531,7 +1537,7 @@ namespace GitCommands
             return path.Contains(Path.DirectorySeparatorChar) || path.Contains(AppSettings.PosixPathSeparator.ToString());
         }
 
-        public string FetchCmd(string remote, string remoteBranch, string localBranch, bool? fetchTags = false)
+        public string FetchCmd(string remote, string remoteBranch, string localBranch, bool? fetchTags = false, bool isUnshallow = false)
         {
             var progressOption = "";
             if (GitCommandHelpers.VersionInUse.FetchCanAskForProgress)
@@ -1540,10 +1546,10 @@ namespace GitCommands
             if (string.IsNullOrEmpty(remote) && string.IsNullOrEmpty(remoteBranch) && string.IsNullOrEmpty(localBranch))
                 return "fetch " + progressOption;
 
-            return "fetch " + progressOption + GetFetchArgs(remote, remoteBranch, localBranch, fetchTags);
+            return "fetch " + progressOption + GetFetchArgs(remote, remoteBranch, localBranch, fetchTags, isUnshallow);
         }
 
-        public string PullCmd(string remote, string remoteBranch, string localBranch, bool rebase, bool? fetchTags = false)
+        public string PullCmd(string remote, string remoteBranch, string localBranch, bool rebase, bool? fetchTags = false, bool isUnshallow = false)
         {
             var pullArgs = "";
             if (GitCommandHelpers.VersionInUse.FetchCanAskForProgress)
@@ -1552,10 +1558,10 @@ namespace GitCommands
             if (rebase)
                 pullArgs = "--rebase".Combine(" ", pullArgs);
 
-            return "pull " + pullArgs + GetFetchArgs(remote, remoteBranch, localBranch, fetchTags);
+            return "pull " + pullArgs + GetFetchArgs(remote, remoteBranch, localBranch, fetchTags, isUnshallow);
         }
 
-        private string GetFetchArgs(string remote, string remoteBranch, string localBranch, bool? fetchTags)
+        private string GetFetchArgs(string remote, string remoteBranch, string localBranch, bool? fetchTags, bool isUnshallow)
         {
             remote = remote.ToPosixPath();
 
@@ -1587,6 +1593,9 @@ namespace GitCommands
                 localBranchArguments = ":" + "refs/remotes/" + remote.Trim() + "/" + localBranch;
 
             string arguments = fetchTags == true ? " --tags" : fetchTags == false ? " --no-tags" : "";
+
+            if(isUnshallow)
+                arguments += " --unshallow";
 
             return "\"" + remote.Trim() + "\" " + remoteBranchArguments + localBranchArguments + arguments;
         }
@@ -2212,7 +2221,7 @@ namespace GitCommands
             for (int i = 0; i < list.Length; i++)
             {
                 string stashString = list[i];
-                if (stashString.IndexOf(':') > 0 && ! stashString.StartsWith("fatal: "))
+                if (stashString.IndexOf(':') > 0 && !stashString.StartsWith("fatal: "))
                 {
                     stashes.Add(new GitStash(stashString, i));
                 }
@@ -2330,7 +2339,7 @@ namespace GitCommands
                 }).ToList();
 
             // Doesn't work with removed submodules
-            var submodulesList = GetSubmodulesLocalPathes();
+            var submodulesList = GetSubmodulesLocalPaths();
             foreach (var item in list)
             {
                 if (submodulesList.Contains(item.Name))
@@ -2834,6 +2843,32 @@ namespace GitCommands
         }
 
         /// <summary>
+        /// Returns tag's message. If the lightweight tag is passed, corresponding commit message
+        /// is returned.
+        /// </summary>
+        public string GetTagMessage(string tag)
+        {
+            if( string.IsNullOrWhiteSpace(tag))
+                return null;
+
+            tag = tag.Trim();
+
+            string info = RunGitCmd("tag -l -n10 " + tag, SystemEncoding);
+
+            if (info.Trim().StartsWith("fatal") || info.Trim().StartsWith("error:"))
+                return null;
+
+            if (!info.StartsWith(tag))
+                return null;
+
+            info = info.Substring(tag.Length).Trim();
+            if (info.Length == 0)
+                return null;
+
+            return info;
+        }
+
+        /// <summary>
         /// Returns list of filenames which would be ignored
         /// </summary>
         /// <param name="ignorePatterns">Patterns to ignore (.gitignore syntax)</param>
@@ -3298,6 +3333,8 @@ namespace GitCommands
                         encoding = Encoding.UTF8;
                     else if (toEncodingName.Equals(LosslessEncoding.HeaderName, StringComparison.InvariantCultureIgnoreCase))
                         encoding = null; //no recoding is needed
+                    else if (CpEncodingPattern.IsMatch(toEncodingName)) // Encodings written as e.g. "cp1251", which is not a supported encoding string
+                        encoding = Encoding.GetEncoding(int.Parse(toEncodingName.Substring(2)));
                     else
                         encoding = Encoding.GetEncoding(toEncodingName);
                 }
@@ -3307,7 +3344,7 @@ namespace GitCommands
             }
             catch (Exception)
             {
-                return "! Unsupported commit message encoding: " + toEncodingName + " !\n\n" + s;
+                return s + "\n\n! Unsupported commit message encoding: " + toEncodingName + " !";
             }
             return ReEncodeStringFromLossless(s, encoding);
         }
