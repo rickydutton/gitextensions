@@ -73,7 +73,10 @@ namespace GitUI
             FileStatusListView.LargeImageList = _images;
 
             NoFiles.Visible = false;
+            this.Controls.SetChildIndex(NoFiles, 0);
             NoFiles.Font = new Font(SystemFonts.MessageBoxFont, FontStyle.Italic);
+
+            _filter = new Regex(".*");
         }
 
         protected override void DisposeCustomResources()
@@ -536,7 +539,6 @@ namespace GitUI
         }
 
         private GitItemsWithParents _itemsDictionary = new Dictionary<string, IList<GitItemStatus>>();
-        private bool _itemsChanging = false;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Browsable(false)]
         public GitItemsWithParents GitItemStatusesWithParents
@@ -547,29 +549,20 @@ namespace GitUI
             }
             set
             {
-                _itemsChanging = true;
-                if (value == null || !value.Any())
-                    NoFiles.Visible = true;
-                else
-                    NoFiles.Visible = false;
+                _itemsDictionary = value;
+                UpdateFileStatusListView();
+            }
+        }
 
-                bool empty = FileStatusListView.Items.Count == 0;
-                FileStatusListView.ShowGroups = value != null && value.Count > 1;
-                FileStatusListView.Groups.Clear();
-                FileStatusListView.Items.Clear();
-                _itemsDictionary = new Dictionary<string, IList<GitItemStatus>>();
-                if (value == null || value.All(pair => pair.Value.Count == 0))
-                {
-                    if (!empty)
-                    {
-                        //bug in the ListView control where supplying an empty list will not trigger a SelectedIndexChanged event, so we force it to trigger
-                        FileStatusListView_SelectedIndexChanged();
-                    }
-                    return;
-                }
-                FileStatusListView.BeginUpdate();
-                var list = new List<ListViewItem>();
-                foreach (var pair in value)
+        private void UpdateFileStatusListView(bool updateCausedByFilter=false)
+        {
+            FileStatusListView.BeginUpdate();
+            FileStatusListView.ShowGroups = _itemsDictionary != null && _itemsDictionary.Count > 1;
+            FileStatusListView.Groups.Clear();
+            FileStatusListView.Items.Clear();
+            if (_itemsDictionary != null)
+            {
+                foreach (var pair in _itemsDictionary)
                 {
                     ListViewGroup group = null;
                     if (!String.IsNullOrEmpty(pair.Key))
@@ -591,37 +584,35 @@ namespace GitUI
                     }
                     foreach (var item in pair.Value)
                     {
-                        var listItem = new ListViewItem(item.Name, group);
-                        listItem.ImageIndex = GetItemImageIndex(item);
-                        if (item.SubmoduleStatus != null && !item.SubmoduleStatus.IsCompleted)
+                        if (_filter.IsMatch(item.Name))
                         {
-                            var capturedItem = item;
-                            item.SubmoduleStatus.ContinueWith((task) => listItem.ImageIndex = GetItemImageIndex(capturedItem),
-                                                              CancellationToken.None,
-                                                              TaskContinuationOptions.OnlyOnRanToCompletion,
-                                                              TaskScheduler.FromCurrentSynchronizationContext());
+                            var listItem = new ListViewItem(item.Name, group);
+                            listItem.ImageIndex = GetItemImageIndex(item);
+                            if (item.SubmoduleStatus != null && !item.SubmoduleStatus.IsCompleted)
+                            {
+                                var capturedItem = item;
+                                item.SubmoduleStatus.ContinueWith((task) => listItem.ImageIndex = GetItemImageIndex(capturedItem),
+                                                                  CancellationToken.None,
+                                                                  TaskContinuationOptions.OnlyOnRanToCompletion,
+                                                                  TaskScheduler.FromCurrentSynchronizationContext());
+                            }
+                            listItem.Tag = item;
+                            FileStatusListView.Items.Add(listItem);
                         }
-                        listItem.Tag = item;
-                        list.Add(listItem);
                     };
                 }
-                FileStatusListView.Items.AddRange(list.ToArray());
-                _itemsChanging = false;
-                FileStatusListView_SizeChanged(null, null);
-                foreach (ListViewItem item in FileStatusListView.Items)
-                {
-                    string parentRev = item.Group != null ? item.Group.Tag as string : "";
-                    if (!_itemsDictionary.ContainsKey(parentRev))
-                        _itemsDictionary.Add(parentRev, new List<GitItemStatus>());
-                    _itemsDictionary[parentRev].Add((GitItemStatus)item.Tag);
-                }
-                FileStatusListView.EndUpdate();
-                FileStatusListView.SetGroupState(ListViewGroupState.Collapsible);
+            }
+            if (updateCausedByFilter==false)
+            {
+                FileStatusListView_SelectedIndexChanged();
                 if (DataSourceChanged != null)
                     DataSourceChanged(this, new EventArgs());
                 if (SelectFirstItemOnSetItems)
                     SelectFirstVisibleItem();
             }
+            FileStatusListView_SizeChanged(null, null);
+            FileStatusListView.SetGroupState(ListViewGroupState.Collapsible);
+            FileStatusListView.EndUpdate();
         }
 
         [DefaultValue(true)]
@@ -654,9 +645,6 @@ namespace GitUI
 
         private void FileStatusListView_SizeChanged(object sender, EventArgs e)
         {
-            if (_itemsChanging)
-                return;
-
             NoFiles.Location = new Point(5, 5);
             NoFiles.Size = new Size(Size.Width - 10, Size.Height - 10);
             Refresh();
@@ -695,19 +683,19 @@ namespace GitUI
             }
         }
 
-        public int SetSelectionFilter(string filter)
+        public int SetSelectionFilter(string selectionFilter)
         {
-            return FilterFiles(RegexFor(filter));
+            return SelectFiles(RegexForSelecting(selectionFilter));
         }
 
-        private static Regex RegexFor(string value)
+        private static Regex RegexForSelecting(string value)
         {
             return string.IsNullOrEmpty(value)
                 ? new Regex("^$", RegexOptions.Compiled)
                 : new Regex(value, RegexOptions.Compiled);
         }
 
-        private int FilterFiles(Regex filter)
+        private int SelectFiles(Regex selctionFilter)
         {
             try
             {
@@ -717,7 +705,7 @@ namespace GitUI
                 int i = 0;
                 foreach (var item in items)
                 {
-                    FileStatusListView.Items[i].Selected = filter.IsMatch(item.Name);
+                    FileStatusListView.Items[i].Selected = selctionFilter.IsMatch(item.Name);
                     i++;
                 }
 
@@ -729,8 +717,27 @@ namespace GitUI
             }
         }
 
+        public int SetFilter(string value)
+        {
+            return FilterFiles(RegexForFiltering(value));
+        }
+
+        private static Regex RegexForFiltering(string value)
+        {
+            return string.IsNullOrEmpty(value)
+                ? new Regex(".", RegexOptions.Compiled)
+                : new Regex(value, RegexOptions.Compiled);
+        }
+
+        private int FilterFiles(Regex filter)
+        {
+            _filter = filter;
+            UpdateFileStatusListView(true);
+            return FileStatusListView.Items.Count;
+        }
         public void SetDiffs(List<GitRevision> revisions)
         {
+            NoFiles.Visible = false;
             switch (revisions.Count)
             {
                 case 0:
@@ -758,6 +765,26 @@ namespace GitUI
                     NoFiles.Text = _UnsupportedMultiselectAction.Text;
                     GitItemStatuses = null;
                     break;
+            }
+            UpdateNoFilesLabelVisibility();
+        }
+
+        private void UpdateNoFilesLabelVisibility()
+        {
+            if (GitItemStatusesWithParents == null && GitItemStatuses == null)
+                NoFiles.Visible = true;
+            else if (GitItemStatusesWithParents != null)
+            {
+                List<string> keys = GitItemStatusesWithParents.Keys.ToList();
+                if (keys.Count == 0)
+                    NoFiles.Visible = true;
+                else if (keys.Count == 1 && (GitItemStatusesWithParents[keys[0]] == null || GitItemStatusesWithParents[keys[0]].Count == 0))
+                    NoFiles.Visible = true;
+            }
+            else if (GitItemStatuses != null)
+            {
+                if (GitItemStatuses.Count == 0)
+                    NoFiles.Visible = true;
             }
         }
 
@@ -802,6 +829,8 @@ namespace GitUI
                 }
             }
         }
+
+        private Regex _filter;
     }
 
 }
