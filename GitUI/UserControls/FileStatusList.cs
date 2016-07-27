@@ -677,7 +677,7 @@ namespace GitUI
         {
             return string.IsNullOrEmpty(value)
                 ? new Regex("^$", RegexOptions.Compiled)
-                : new Regex(value, RegexOptions.Compiled);
+                : new Regex(value, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         private int SelectFiles(Regex selctionFilter)
@@ -711,7 +711,7 @@ namespace GitUI
         {
             return string.IsNullOrEmpty(value)
                 ? new Regex(".", RegexOptions.Compiled)
-                : new Regex(value, RegexOptions.Compiled);
+                : new Regex(value, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         private int FilterFiles(Regex filter)
