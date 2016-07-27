@@ -1195,7 +1195,7 @@ namespace GitCommands
 
         public static bool UseConsoleEmulatorForCommands
         {
-            get { return GetBool("UseConsoleEmulatorForCommands", true); }
+            get { return GetBool("UseConsoleEmulatorForCommands", false); }
             set { SetBool("UseConsoleEmulatorForCommands", value); }
         }
 
