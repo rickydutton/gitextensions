@@ -968,9 +968,7 @@ namespace GitUI.CommandsDialogs
             // 
             // DiffSplitContainer.Panel1
             // 
-            this.DiffSplitContainer.Panel1.Controls.Add(this.FilterWatermarkLabel);
             this.DiffSplitContainer.Panel1.Controls.Add(this.DiffFiles);
-            this.DiffSplitContainer.Panel1.Controls.Add(this.FilterComboBox);
             // 
             // DiffSplitContainer.Panel2
             // 
@@ -1179,21 +1177,6 @@ namespace GitUI.CommandsDialogs
             this.findInDiffToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.findInDiffToolStripMenuItem.Text = "Find";
             this.findInDiffToolStripMenuItem.Click += new System.EventHandler(this.findInDiffToolStripMenuItem_Click);
-            // 
-            // FilterComboBox
-            // 
-            this.FilterComboBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.FilterComboBox.FormattingEnabled = true;
-            this.FilterComboBox.Location = new System.Drawing.Point(0, 0);
-            this.FilterComboBox.Margin = new System.Windows.Forms.Padding(5);
-            this.FilterComboBox.Name = "FilterComboBox";
-            this.FilterComboBox.Size = new System.Drawing.Size(215, 24);
-            this.FilterComboBox.TabIndex = 2;
-            this.FilterComboBox.SelectedIndexChanged += new System.EventHandler(this.FilterComboBox_SelectedIndexChanged);
-            this.FilterComboBox.TextUpdate += new System.EventHandler(this.FilterComboBox_TextUpdate);
-            this.FilterComboBox.GotFocus += new System.EventHandler(this.FilterComboBox_GotFocus);
-            this.FilterComboBox.LostFocus += new System.EventHandler(this.FilterComboBox_LostFocus);
-            this.FilterComboBox.MouseEnter += new System.EventHandler(this.FilterComboBox_MouseEnter);
             // 
             // DiffText
             // 

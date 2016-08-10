@@ -80,7 +80,6 @@
             this.ForcePushOptionPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ForcePushOptionPanel.Controls.Add(this.ckForceWithLease);
             this.ForcePushOptionPanel.Controls.Add(this.ForcePushBranches);
-            this.ForcePushOptionPanel.Location = new System.Drawing.Point(27, 7);
             this.ForcePushOptionPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ForcePushOptionPanel.Name = "ForcePushOptionPanel";
             this.ForcePushOptionPanel.Size = new System.Drawing.Size(194, 23);
@@ -182,6 +181,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.AutoSize = true;
+            this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox1.Controls.Add(this.tableLayoutPanel1);
             this.groupBox1.Controls.Add(this.ShowOptions);
             this.groupBox1.Controls.Add(this.PushOptionsPanel);
@@ -252,7 +253,7 @@
             // ShowOptions
             // 
             this.ShowOptions.AutoSize = true;
-            this.ShowOptions.Location = new System.Drawing.Point(30, 55);
+            this.ShowOptions.Location = new System.Drawing.Point(124, 55);
             this.ShowOptions.Name = "ShowOptions";
             this.ShowOptions.Size = new System.Drawing.Size(71, 13);
             this.ShowOptions.TabIndex = 26;
@@ -269,9 +270,9 @@
             this.PushOptionsPanel.Controls.Add(this.ReplaceTrackingReference);
             this.PushOptionsPanel.Controls.Add(this.ForcePushOptionPanel);
             this.PushOptionsPanel.Controls.Add(this._createPullRequestCB);
-            this.PushOptionsPanel.Location = new System.Drawing.Point(33, 58);
+            this.PushOptionsPanel.Location = new System.Drawing.Point(127, 55);
             this.PushOptionsPanel.Name = "PushOptionsPanel";
-            this.PushOptionsPanel.Size = new System.Drawing.Size(561, 57);
+            this.PushOptionsPanel.Size = new System.Drawing.Size(470, 20);
             this.PushOptionsPanel.TabIndex = 25;
             this.PushOptionsPanel.Visible = false;
             // 
@@ -281,7 +282,7 @@
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.RecursiveSubmodules);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(313, 5);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(218, 5);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(215, 25);
@@ -326,7 +327,7 @@
             // _createPullRequestCB
             // 
             this._createPullRequestCB.AutoSize = true;
-            this._createPullRequestCB.Location = new System.Drawing.Point(316, 37);
+            this._createPullRequestCB.Location = new System.Drawing.Point(221, 37);
             this._createPullRequestCB.Name = "_createPullRequestCB";
             this._createPullRequestCB.Size = new System.Drawing.Size(171, 17);
             this._createPullRequestCB.TabIndex = 22;
@@ -349,7 +350,7 @@
             this.TagTab.Location = new System.Drawing.Point(4, 22);
             this.TagTab.Name = "TagTab";
             this.TagTab.Padding = new System.Windows.Forms.Padding(3);
-            this.TagTab.Size = new System.Drawing.Size(606, 127);
+            this.TagTab.Size = new System.Drawing.Size(600, 87);
             this.TagTab.TabIndex = 1;
             this.TagTab.Text = "Push tags";
             this.TagTab.ToolTipText = "Push tags to remote repository";
@@ -363,7 +364,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(600, 121);
+            this.groupBox3.Size = new System.Drawing.Size(594, 81);
             this.groupBox3.TabIndex = 23;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Tag";
@@ -403,7 +404,7 @@
             this.MultipleBranchTab.Location = new System.Drawing.Point(4, 22);
             this.MultipleBranchTab.Name = "MultipleBranchTab";
             this.MultipleBranchTab.Padding = new System.Windows.Forms.Padding(3);
-            this.MultipleBranchTab.Size = new System.Drawing.Size(606, 127);
+            this.MultipleBranchTab.Size = new System.Drawing.Size(600, 87);
             this.MultipleBranchTab.TabIndex = 2;
             this.MultipleBranchTab.Text = "Push multiple branches";
             this.MultipleBranchTab.UseVisualStyleBackColor = true;
@@ -414,7 +415,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(3, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(600, 121);
+            this.groupBox4.Size = new System.Drawing.Size(594, 81);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Select Branches to Push";
@@ -435,7 +436,7 @@
             this.BranchGrid.Location = new System.Drawing.Point(3, 17);
             this.BranchGrid.Name = "BranchGrid";
             this.BranchGrid.RowHeadersVisible = false;
-            this.BranchGrid.Size = new System.Drawing.Size(594, 101);
+            this.BranchGrid.Size = new System.Drawing.Size(588, 59);
             this.BranchGrid.TabIndex = 0;
             this.BranchGrid.CurrentCellDirtyStateChanged += new System.EventHandler(this.BranchGrid_CurrentCellDirtyStateChanged);
             // 
@@ -599,6 +600,7 @@
             this.ForcePushOptionPanel.PerformLayout();
             this.TabControlTagBranch.ResumeLayout(false);
             this.BranchTab.ResumeLayout(false);
+            this.BranchTab.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);

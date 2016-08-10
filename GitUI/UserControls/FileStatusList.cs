@@ -758,24 +758,6 @@ namespace GitUI
             }
         }
 
-        public int SetFilter(string value)
-        {
-            return FilterFiles(RegexForFiltering(value));
-        }
-
-        private static Regex RegexForFiltering(string value)
-        {
-            return string.IsNullOrEmpty(value)
-                ? new Regex(".", RegexOptions.Compiled)
-                : new Regex(value, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        }
-
-        private int FilterFiles(Regex filter)
-        {
-            _filter = filter;
-            UpdateFileStatusListView(true);
-            return FileStatusListView.Items.Count;
-        }
         public void SetDiffs(List<GitRevision> revisions)
         {
             HandleVisibility_NoFilesLabel_FilterComboBox(filesPresent: true);
