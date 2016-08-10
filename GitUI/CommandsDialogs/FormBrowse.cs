@@ -202,9 +202,9 @@ namespace GitUI.CommandsDialogs
                 .ContinueWith((task) => RegisterPlugins(), TaskScheduler.FromCurrentSynchronizationContext());
             RevisionGrid.GitModuleChanged += SetGitModule;
             RevisionGrid.OnToggleLeftPanelRequested = () => toggleLeftPanel_Click(null, null);
-            _filterRevisionsHelper = new FilterRevisionsHelper(toolStripTextBoxFilter, toolStripDropDownButton1, RevisionGrid, toolStripLabel2, this);
-            _filterBranchHelper = new FilterBranchHelper(toolStripBranches, toolStripDropDownButton2, RevisionGrid);
-            toolStripBranches.DropDown += toolStripBranches_DropDown_ResizeDropDownWidth;
+            _filterRevisionsHelper = new FilterRevisionsHelper(toolStripRevisionFilterTextBox, toolStripRevisionFilterDropDownButton, RevisionGrid, toolStripRevisionFilterLabel, ShowFirstParent, form: this);
+            _filterBranchHelper = new FilterBranchHelper(toolStripBranchFilterComboBox, toolStripBranchFilterDropDownButton, RevisionGrid);
+            toolStripBranchFilterComboBox.DropDown += toolStripBranches_DropDown_ResizeDropDownWidth;
 
             Translate ();
 
@@ -1605,7 +1605,14 @@ namespace GitUI.CommandsDialogs
 
         private void SettingsClick(object sender, EventArgs e)
         {
-            SettingsToolStripMenuItem2Click(sender, e);
+            var translation = Settings.Translation;
+            UICommands.StartSettingsDialog(this);
+            if (translation != Settings.Translation)
+                Translate();
+
+            this.Hotkeys = HotkeySettingsManager.LoadHotkeys(HotkeySettingsName);
+            RevisionGrid.ReloadHotkeys();
+            RevisionGrid.ReloadTranslation();
         }
 
         private void TagToolStripMenuItemClick(object sender, EventArgs e)
@@ -1653,18 +1660,6 @@ namespace GitUI.CommandsDialogs
         private void EditGitignoreToolStripMenuItem1Click(object sender, EventArgs e)
         {
             UICommands.StartEditGitIgnoreDialog(this);
-        }
-
-        private void SettingsToolStripMenuItem2Click(object sender, EventArgs e)
-        {
-            var translation = Settings.Translation;
-            UICommands.StartSettingsDialog(this);
-            if (translation != Settings.Translation)
-                Translate();
-
-            this.Hotkeys = HotkeySettingsManager.LoadHotkeys(HotkeySettingsName);
-            RevisionGrid.ReloadHotkeys();
-            RevisionGrid.ReloadTranslation();
         }
 
         private void ArchiveToolStripMenuItemClick(object sender, EventArgs e)
@@ -2198,7 +2193,7 @@ namespace GitUI.CommandsDialogs
                 return;
 
             var fileName = Path.Combine(Module.WorkingDir, (gitItem).FileName);
-            Clipboard.SetText(fileName.Replace('/', '\\'));
+            Clipboard.SetText(fileName.ToNativePath());
         }
 
         private void copyFilenameToClipboardToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -2544,7 +2539,7 @@ namespace GitUI.CommandsDialogs
                     {
                         string fileName = Path.Combine(Module.WorkingDir, item.FileName);
 
-                        fileList.Add(fileName.Replace('/', '\\'));
+                        fileList.Add(fileName.ToNativePath());
                     }
 
                     DataObject obj = new DataObject();
@@ -2639,7 +2634,7 @@ namespace GitUI.CommandsDialogs
             for (int i = 0; i < pathParts.Length; i++)
             {
                 string pathPart = pathParts[i];
-                string diffPathPart = pathPart.Replace("/", "\\");
+                string diffPathPart = pathPart.ToNativePath();
 
                 var currentFoundNode = currentNodes.Cast<TreeNode>().FirstOrDefault(a =>
                 {
@@ -3135,7 +3130,17 @@ namespace GitUI.CommandsDialogs
         {
             if (e.Command == "gotocommit")
             {
-                RevisionGrid.SetSelectedRevision(new GitRevision(Module, e.Data));
+                var revision = new GitRevision(Module, e.Data);
+                var found = RevisionGrid.SetSelectedRevision(revision);
+
+                // When 'git log --first-parent' filtration is used, user can click on child commit
+                // that is not present in the shown git log. User still wants to see the child commit
+                // and to make it possible we add explicit branch filter and refresh.
+                if (AppSettings.ShowFirstParent && !found)
+                {
+                    _filterBranchHelper.SetBranchFilter(revision.Guid, refresh: true);
+                    RevisionGrid.SetSelectedRevision(revision);
+                }
             }
             else if (e.Command == "gotobranch" || e.Command == "gototag")
             {
@@ -3599,25 +3604,15 @@ namespace GitUI.CommandsDialogs
                 return;
 
             string posixPath;
-            if (TryConvertWindowsPathToPosix(path, out posixPath))
+            if (PathUtil.TryConvertWindowsPathToPosix(path, out posixPath))
             {
-                //Clear terminal line
+                //Clear terminal line by sending 'backspace' characters
                 for (int i = 0; i < 10000; i++)
                 {
                     terminal.RunningSession.WriteInputText("\b");
                 }
                 terminal.RunningSession.WriteInputText(@"cd " + posixPath + Environment.NewLine);
             }
-        }
-
-        private bool TryConvertWindowsPathToPosix(string path, out string posixPath)
-        {
-            posixPath = null;
-            var directoryInfo = new DirectoryInfo(path);
-            if (!directoryInfo.Exists)
-                return false;
-            posixPath = "/" + directoryInfo.FullName.Replace(@"\", "/").Remove(1, 1);
-            return true;
         }
 
         /// <summary>
@@ -3657,7 +3652,7 @@ namespace GitUI.CommandsDialogs
 
         private void toolStripBranches_DropDown_ResizeDropDownWidth (object sender, EventArgs e)
         {
-            ComboBoxHelper.ResizeComboBoxDropDownWidth (toolStripBranches.ComboBox, AppSettings.BranchDropDownMinWidth, AppSettings.BranchDropDownMaxWidth);
+            ComboBoxHelper.ResizeComboBoxDropDownWidth (toolStripBranchFilterComboBox.ComboBox, AppSettings.BranchDropDownMinWidth, AppSettings.BranchDropDownMaxWidth);
         }
 
         private void OnViewLineOnGitHub(string githubLineUrlFormat)
@@ -3681,89 +3676,6 @@ namespace GitUI.CommandsDialogs
             MainSplitContainer.SplitterDistance = settings.FormBrowse_MainSplitContainer_SplitterDistance;
         }
 
-        #region FilterComboBox
 
-        private long _lastUserInputTime;
-        private string _ToolTipText="";
-        private void FilterComboBox_TextUpdate(object sender, EventArgs e)
-        {
-            var currentTime = DateTime.Now.Ticks;
-            if (_lastUserInputTime == 0)
-            {
-                long timerLastChanged = currentTime;
-                var timer = new System.Windows.Forms.Timer { Interval = 250 };
-                timer.Tick += (s, a) =>
-                {
-                    if (NoUserInput(timerLastChanged))
-                    {
-                        _ToolTipText = "";
-                        var fileCount = 0;
-                        try
-                        {
-                            fileCount = DiffFiles.SetFilter(FilterComboBox.Text);
-                        }
-                        catch (ArgumentException ae)
-                        {
-                            _ToolTipText = ae.Message;
-                        }
-                        if (fileCount>0)
-                        {
-                            AddToSelectionFilter(FilterComboBox.Text);
-                        }
-
-                        timer.Stop();
-                        _lastUserInputTime = 0;
-                    }
-                    timerLastChanged = _lastUserInputTime;
-                };
-
-                timer.Start();
-            }
-
-            _lastUserInputTime = currentTime;
-        }
-
-        private bool NoUserInput(long timerLastChanged)
-        {
-            return timerLastChanged == _lastUserInputTime;
-        }
-
-        private void AddToSelectionFilter(string filter)
-        {
-            if (!FilterComboBox.Items.Cast<string>().Any(candiate => candiate == filter))
-            {
-                const int SelectionFilterMaxLength = 10;
-                if (FilterComboBox.Items.Count == SelectionFilterMaxLength)
-                {
-                    FilterComboBox.Items.RemoveAt(SelectionFilterMaxLength - 1);
-                }
-                FilterComboBox.Items.Insert(0, filter);
-            }
-        }
-
-        private void FilterComboBox_MouseEnter(object sender, EventArgs e)
-        {
-            FilterToolTip.SetToolTip(FilterComboBox, _ToolTipText);
-        }
-
-        private void FilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DiffFiles.SetFilter(FilterComboBox.Text);
-        }
-
-        private void FilterComboBox_GotFocus(object sender, EventArgs e)
-        {
-            FilterWatermarkLabel.Visible = false;
-        }
-
-        private void FilterComboBox_LostFocus(object sender, EventArgs e)
-        {
-            if (!FilterWatermarkLabel.Visible && string.IsNullOrEmpty(FilterComboBox.Text))
-            {
-                FilterWatermarkLabel.Visible = true;
-            }
-        }
-
-        #endregion FilterComboBox
     }
 }

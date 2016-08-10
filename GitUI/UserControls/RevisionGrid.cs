@@ -80,6 +80,7 @@ namespace GitUI
         public event EventHandler<GitModuleEventArgs> GitModuleChanged;
         public event EventHandler<DoubleClickRevisionEventArgs> DoubleClickRevision;
         public Action OnToggleLeftPanelRequested;
+        public event EventHandler<EventArgs> ShowFirstParentsToggled;
 
         private readonly RevisionGridMenuCommands _revisionGridMenuCommands;
 
@@ -98,7 +99,8 @@ namespace GitUI
             InitLayout();
             InitializeComponent();
 
-            _parentChildNavigationHistory = new ParentChildNavigationHistory((rev) => SetSelectedRevision(rev));
+            // Parent-child navigation can expect that SetSelectedRevision is always successfull since it always uses first-parents
+            _parentChildNavigationHistory = new ParentChildNavigationHistory(revision => SetSelectedRevision(revision));
             _revisionHighlighting = new AuthorEmailBasedRevisionHighlighting();
 
             this.Loading.Image = global::GitUI.Properties.Resources.loadingpanel;
@@ -652,35 +654,53 @@ namespace GitUI
 
         // Selects row cotaining revision given its revisionId
         // Returns whether the required revision was found and selected
-        public bool SetSelectedRevision(string revision)
+        private bool InternalSetSelectedRevision(string revision)
         {
-            bool revisionSelected = false;
-
-            if (revision != null)
+            int index = FindRevisionIndex(revision);
+            if( index >= 0 )
             {
-                var i = 0;
-                while(i < Revisions.RowCount && !revisionSelected)
+                SetSelectedIndex(index);
+                return true;
+            }
+            else
+            { 
+                Revisions.ClearSelection();
+                Revisions.Select();
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Find specified revision in known to the grid revisions 
+        /// </summary>
+        /// <param name="revision">Revision to lookup</param>
+        /// <returns>Index of the found revision or -1 if nothing was found</returns>
+        private int FindRevisionIndex(string revision)
+        {
+            if (string.IsNullOrWhiteSpace(revision))
+            {
+                return -1;
+            }
+
+            for (int i = 0; i < Revisions.RowCount; i++)
+            {
+                if (GetRevision(i).Guid == revision)
                 {
-                    if (GetRevision(i).Guid == revision)
-                    {
-                        SetSelectedIndex(i);
-                        revisionSelected = true;
-                    }
-                    i++;
+                    return i;
                 }
             }
 
-            if (revisionSelected)
+            return -1;
+        }
+
+        public bool SetSelectedRevision(string revision)
+        {
+            var found = InternalSetSelectedRevision(revision);
+            if (found)
             {
                 _navigationHistory.Push(revision);
             }
-            else
-            {
-                Revisions.ClearSelection();
-                Revisions.Select();
-            }
-
-            return revisionSelected;
+            return found;
         }
 
         public GitRevision GetRevision(string guid)
@@ -1000,6 +1020,12 @@ namespace GitUI
                 if (!AppSettings.ShowMergeCommits)
                     _refsOptions |= RefsFiltringOptions.NoMerges;
 
+                if (AppSettings.ShowFirstParent)
+                    _refsOptions |= RefsFiltringOptions.FirstParent;
+
+                if (AppSettings.ShowSimplifyByDecoration)
+                    _refsOptions |= RefsFiltringOptions.SimplifyByDecoration;
+
                 RevisionGridInMemFilter revisionFilterIMF = RevisionGridInMemFilter.CreateIfNeeded(_revisionFilter.GetInMemAuthorFilter(),
                                                                                                    _revisionFilter.GetInMemCommitterFilter(),
                                                                                                    _revisionFilter.GetInMemMessageFilter(),
@@ -1197,9 +1223,24 @@ namespace GitUI
         private void SelectInitialRevision()
         {
             string filtredCurrentCheckout = _filtredCurrentCheckout;
-            if (LastSelectedRows != null)
+            string[] lastSelectedRows = LastSelectedRows ?? new string[0];
+
+            // When 'git log --first-parent' filtration is applied we can have the following situation:
+            // - user via CommitInfo traverses to a not first parent commit
+            // - branch filter is applied to be able to traverse to this commit
+            // - then user resets this branch filter with ShowFirstParent filter still on
+            //
+            // In such situation selected commits likelly are absent from availabe Revisions and
+            // thus it is not possible to make them selectable. To prevent jumping around to a random commit
+            // in UI we first filter out all unavailable commits from LastSelectedRows.
+            if (AppSettings.ShowFirstParent)
             {
-                Revisions.SelectedIds = LastSelectedRows;
+                lastSelectedRows = lastSelectedRows.Where(revision => FindRevisionIndex(revision) >= 0).ToArray();
+            }
+
+            if (lastSelectedRows.Any())
+            {
+                Revisions.SelectedIds = lastSelectedRows;
                 LastSelectedRows = null;
             }
             else
@@ -2721,6 +2762,17 @@ namespace GitUI
             ForceRefreshRevisions();
         }
 
+        internal void ShowFirstParent_ToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            AppSettings.ShowFirstParent = !AppSettings.ShowFirstParent;
+
+            var handler = ShowFirstParentsToggled;
+            if (handler != null)
+                handler(this, e);
+
+            ForceRefreshRevisions();
+        }
+
         public void OnModuleChanged(object sender, GitModuleEventArgs e)
         {
             var handler = GitModuleChanged;
@@ -2936,8 +2988,12 @@ namespace GitUI
             ToggleDrawNonRelativesGray,
             ToggleShowGitNotes,
             ToggleRevisionCardLayout,
+            ToggleShowMergeCommits,
             ShowAllBranches,
             ShowCurrentBranchOnly,
+            ShowFilteredBranches,
+            ShowRemoteBranches,
+            ShowFirstParent,
             GoToParent,
             GoToChild,
             ToggleHighlightSelectedBranch,
@@ -2966,10 +3022,14 @@ namespace GitUI
                 case Commands.ToggleDrawNonRelativesGray: DrawNonrelativesGray_ToolStripMenuItemClick(null, null); break;
                 case Commands.ToggleShowGitNotes: ShowGitNotes_ToolStripMenuItemClick(null, null); break;
                 case Commands.ToggleRevisionCardLayout: ToggleRevisionCardLayout(); break;
+                case Commands.ToggleShowMergeCommits: ShowMergeCommits_ToolStripMenuItemClick(null, null);  break;
                 case Commands.ShowAllBranches: ShowAllBranches_ToolStripMenuItemClick(null, null); break;
+                case Commands.ShowCurrentBranchOnly: ShowCurrentBranchOnly_ToolStripMenuItemClick(null, null); break;
+                case Commands.ShowFilteredBranches: ShowFilteredBranches_ToolStripMenuItemClick(null, null); break;
+                case Commands.ShowRemoteBranches: ShowRemoteBranches_ToolStripMenuItemClick(null, null); break;
+                case Commands.ShowFirstParent: ShowFirstParent_ToolStripMenuItemClick(null, null); break;
                 case Commands.SelectCurrentRevision: SetSelectedRevision(new GitRevision(Module, CurrentCheckout)); break;
                 case Commands.GoToCommit: _revisionGridMenuCommands.GotoCommitExcecute(); break;
-                case Commands.ShowCurrentBranchOnly: ShowCurrentBranchOnly_ToolStripMenuItemClick(null, null); break;
                 case Commands.GoToParent: goToParentToolStripMenuItem_Click(null, null); break;
                 case Commands.GoToChild: goToChildToolStripMenuItem_Click(null, null); break;
                 case Commands.ToggleHighlightSelectedBranch: ToggleHighlightSelectedBranch(); break;

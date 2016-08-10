@@ -1759,6 +1759,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Icons\IconShowFirstParent.png" />
     <Content Include="Translation\Czech.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

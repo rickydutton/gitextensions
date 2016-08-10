@@ -102,7 +102,7 @@ namespace GitCommands
             string debugPath = @"GitExtensions\bin\Debug";
             int len = debugPath.Length;
             var path = gitExtDir.Substring(gitExtDir.Length - len);
-            if (debugPath.Replace('\\', '/').Equals(path.Replace('\\', '/')))
+            if (debugPath.ToPosixPath().Equals(path.ToPosixPath()))
             {
                 string projectPath = gitExtDir.Substring(0, gitExtDir.Length - len);
                 return Path.Combine(projectPath, "Bin");
@@ -278,6 +278,12 @@ namespace GitCommands
         {
             get { return GetBool("showresetallchanges", true); }
             set { SetBool("showresetallchanges", value); }
+        }
+
+        public static bool ProvideAutocompletion
+        {
+          get { return GetBool("provideautocompletion", true); }
+          set { SetBool("provideautocompletion", value); }
         }
 
         public static string TruncatePathMethod
@@ -766,10 +772,22 @@ namespace GitCommands
             set { SetBool("showcurrentbranchonly", value); }
         }
 
+        public static bool ShowSimplifyByDecoration
+        {
+            get { return GetBool("showsimplifybydecoration", false); }
+            set { SetBool("showsimplifybydecoration", value); }
+        }
+
         public static bool BranchFilterEnabled
         {
             get { return GetBool("branchfilterenabled", false); }
             set { SetBool("branchfilterenabled", value); }
+        }
+
+        public static bool ShowFirstParent
+        {
+            get { return GetBool("showfirstparent", false); }
+            set { SetBool("showfirstparent", value); }
         }
 
         public static int CommitDialogSplitter
