@@ -64,12 +64,12 @@
     <CodeAnalysisRuleSet>..\FxCopRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" Condition="!$(DefineConstants.Contains('__MONOCS__'))"/>
+    <Reference Include="PresentationFramework" Condition="!$(DefineConstants.Contains('__MONOCS__'))"/>
     <Reference Include="ConEmu.WinForms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=00340228797aafb8, processorArchitecture=MSIL">
       <HintPath>..\packages\ConEmu.Control.WinForms.1.0.20160313.1\lib\net40\ConEmu.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="PSTaskDialog">
       <HintPath>..\Bin\PSTaskDialog.dll</HintPath>
     </Reference>
@@ -111,7 +111,7 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xaml" Condition="!$(DefineConstants.Contains('__MONOCS__'))"/>
     <Reference Include="System.Xml" />
     <Reference Include="ICSharpCode.TextEditor">
       <HintPath>..\Bin\ICSharpCode.TextEditor.dll</HintPath>
@@ -122,8 +122,8 @@
     <Reference Include="Microsoft.WindowsAPICodePack.Shell">
       <HintPath>..\Bin\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WindowsBase" Condition="!$(DefineConstants.Contains('__MONOCS__'))"/>
+    <Reference Include="WindowsFormsIntegration" Condition="!$(DefineConstants.Contains('__MONOCS__'))"/>
     <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" Condition="!$(DefineConstants.Contains('__MONOCS__'))">
       <HintPath>..\packages\WPFToolkit.3.5.50211.1\lib\WPFToolkit.dll</HintPath>
       <Private>True</Private>
@@ -1189,14 +1189,14 @@
     <EmbeddedResource Include="CommandsDialogs\SettingsDialog\Plugins\PluginRootIntroductionPage.resx">
       <DependentUpon>PluginRootIntroductionPage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserControls\BranchSelector.resx">
-      <DependentUpon>BranchSelector.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UserControls\AutoCompleteTextBoxes\WinformsAutoCompleteTextBox.resx">
       <DependentUpon>WinformsAutoCompleteTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\AutoCompleteTextBoxes\WpfAutoCompleteTextBoxHost.resx" Condition="!$(DefineConstants.Contains('__MONOCS__'))">
       <DependentUpon>WpfAutoCompleteTextBoxHost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\BranchSelector.resx">
+      <DependentUpon>BranchSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\CommitPickerSmallControl.resx">
       <DependentUpon>CommitPickerSmallControl.cs</DependentUpon>

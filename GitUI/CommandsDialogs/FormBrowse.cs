@@ -3655,17 +3655,17 @@ namespace GitUI.CommandsDialogs
             ComboBoxHelper.ResizeComboBoxDropDownWidth (toolStripBranchFilterComboBox.ComboBox, AppSettings.BranchDropDownMinWidth, AppSettings.BranchDropDownMaxWidth);
         }
 
+        private void toggleLeftPanel_Click(object sender, EventArgs e)
+        {
+            MainSplitContainer.Panel1Collapsed = !MainSplitContainer.Panel1Collapsed;
+        }
+
         private void OnViewLineOnGitHub(string githubLineUrlFormat)
         {
             var url = string.Format(githubLineUrlFormat,
                 RevisionGrid.GetSelectedRevisions().Last().Guid,
                 MD5.Create().GetMd5HashString(DiffFiles.SelectedItem.Name));
             Process.Start(url);
-        }
-
-        private void toggleLeftPanel_Click(object sender, EventArgs e)
-        {
-            MainSplitContainer.Panel1Collapsed = !MainSplitContainer.Panel1Collapsed;
         }
 
         private void RecoverSplitterContainerLayout()
@@ -3675,7 +3675,5 @@ namespace GitUI.CommandsDialogs
             DiffSplitContainer.SplitterDistance = settings.FormBrowse_DiffSplitContainer_SplitterDistance;
             MainSplitContainer.SplitterDistance = settings.FormBrowse_MainSplitContainer_SplitterDistance;
         }
-
-
     }
 }
