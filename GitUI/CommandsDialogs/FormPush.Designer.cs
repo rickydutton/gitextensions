@@ -80,6 +80,7 @@
             this.ForcePushOptionPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ForcePushOptionPanel.Controls.Add(this.ckForceWithLease);
             this.ForcePushOptionPanel.Controls.Add(this.ForcePushBranches);
+            this.ForcePushOptionPanel.Location = new System.Drawing.Point(1, 7);
             this.ForcePushOptionPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ForcePushOptionPanel.Name = "ForcePushOptionPanel";
             this.ForcePushOptionPanel.Size = new System.Drawing.Size(194, 23);
@@ -139,7 +140,7 @@
             this.Push.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Push.Image = global::GitUI.Properties.Resources.ArrowUp;
             this.Push.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.Push.Location = new System.Drawing.Point(519, 259);
+            this.Push.Location = new System.Drawing.Point(519, 219);
             this.Push.Name = "Push";
             this.Push.Size = new System.Drawing.Size(101, 25);
             this.Push.TabIndex = 9;
@@ -162,7 +163,7 @@
             this.TabControlTagBranch.Name = "TabControlTagBranch";
             this.TabControlTagBranch.SelectedIndex = 0;
             this.TabControlTagBranch.ShowToolTips = true;
-            this.TabControlTagBranch.Size = new System.Drawing.Size(614, 153);
+            this.TabControlTagBranch.Size = new System.Drawing.Size(614, 113);
             this.TabControlTagBranch.TabIndex = 6;
             this.TabControlTagBranch.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControlTagBranch_Selected);
             // 
@@ -173,7 +174,7 @@
             this.BranchTab.Location = new System.Drawing.Point(4, 22);
             this.BranchTab.Name = "BranchTab";
             this.BranchTab.Padding = new System.Windows.Forms.Padding(3);
-            this.BranchTab.Size = new System.Drawing.Size(606, 127);
+            this.BranchTab.Size = new System.Drawing.Size(606, 87);
             this.BranchTab.TabIndex = 0;
             this.BranchTab.Text = "Push branches";
             this.BranchTab.ToolTipText = "Push branches and commits to remote repository.";
@@ -190,7 +191,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(600, 121);
+            this.groupBox1.Size = new System.Drawing.Size(600, 81);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Branch";
@@ -253,7 +254,7 @@
             // ShowOptions
             // 
             this.ShowOptions.AutoSize = true;
-            this.ShowOptions.Location = new System.Drawing.Point(124, 55);
+            this.ShowOptions.Location = new System.Drawing.Point(26, 54);
             this.ShowOptions.Name = "ShowOptions";
             this.ShowOptions.Size = new System.Drawing.Size(71, 13);
             this.ShowOptions.TabIndex = 26;
@@ -270,9 +271,9 @@
             this.PushOptionsPanel.Controls.Add(this.ReplaceTrackingReference);
             this.PushOptionsPanel.Controls.Add(this.ForcePushOptionPanel);
             this.PushOptionsPanel.Controls.Add(this._createPullRequestCB);
-            this.PushOptionsPanel.Location = new System.Drawing.Point(127, 55);
+            this.PushOptionsPanel.Location = new System.Drawing.Point(47, 54);
             this.PushOptionsPanel.Name = "PushOptionsPanel";
-            this.PushOptionsPanel.Size = new System.Drawing.Size(470, 20);
+            this.PushOptionsPanel.Size = new System.Drawing.Size(514, 20);
             this.PushOptionsPanel.TabIndex = 25;
             this.PushOptionsPanel.Visible = false;
             // 
@@ -282,7 +283,7 @@
             this.flowLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.RecursiveSubmodules);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(218, 5);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(279, 5);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(215, 25);
@@ -317,7 +318,7 @@
             // ReplaceTrackingReference
             // 
             this.ReplaceTrackingReference.AutoSize = true;
-            this.ReplaceTrackingReference.Location = new System.Drawing.Point(27, 37);
+            this.ReplaceTrackingReference.Location = new System.Drawing.Point(0, 37);
             this.ReplaceTrackingReference.Name = "ReplaceTrackingReference";
             this.ReplaceTrackingReference.Size = new System.Drawing.Size(155, 17);
             this.ReplaceTrackingReference.TabIndex = 25;
@@ -327,7 +328,7 @@
             // _createPullRequestCB
             // 
             this._createPullRequestCB.AutoSize = true;
-            this._createPullRequestCB.Location = new System.Drawing.Point(221, 37);
+            this._createPullRequestCB.Location = new System.Drawing.Point(280, 37);
             this._createPullRequestCB.Name = "_createPullRequestCB";
             this._createPullRequestCB.Size = new System.Drawing.Size(171, 17);
             this._createPullRequestCB.TabIndex = 22;
@@ -350,7 +351,7 @@
             this.TagTab.Location = new System.Drawing.Point(4, 22);
             this.TagTab.Name = "TagTab";
             this.TagTab.Padding = new System.Windows.Forms.Padding(3);
-            this.TagTab.Size = new System.Drawing.Size(600, 87);
+            this.TagTab.Size = new System.Drawing.Size(606, 87);
             this.TagTab.TabIndex = 1;
             this.TagTab.Text = "Push tags";
             this.TagTab.ToolTipText = "Push tags to remote repository";
@@ -364,7 +365,7 @@
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(594, 81);
+            this.groupBox3.Size = new System.Drawing.Size(600, 81);
             this.groupBox3.TabIndex = 23;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Tag";
@@ -404,7 +405,7 @@
             this.MultipleBranchTab.Location = new System.Drawing.Point(4, 22);
             this.MultipleBranchTab.Name = "MultipleBranchTab";
             this.MultipleBranchTab.Padding = new System.Windows.Forms.Padding(3);
-            this.MultipleBranchTab.Size = new System.Drawing.Size(600, 87);
+            this.MultipleBranchTab.Size = new System.Drawing.Size(606, 87);
             this.MultipleBranchTab.TabIndex = 2;
             this.MultipleBranchTab.Text = "Push multiple branches";
             this.MultipleBranchTab.UseVisualStyleBackColor = true;
@@ -415,7 +416,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(3, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(594, 81);
+            this.groupBox4.Size = new System.Drawing.Size(600, 81);
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Select Branches to Push";
@@ -436,7 +437,7 @@
             this.BranchGrid.Location = new System.Drawing.Point(3, 17);
             this.BranchGrid.Name = "BranchGrid";
             this.BranchGrid.RowHeadersVisible = false;
-            this.BranchGrid.Size = new System.Drawing.Size(588, 59);
+            this.BranchGrid.Size = new System.Drawing.Size(594, 59);
             this.BranchGrid.TabIndex = 0;
             this.BranchGrid.CurrentCellDirtyStateChanged += new System.EventHandler(this.BranchGrid_CurrentCellDirtyStateChanged);
             // 
@@ -492,7 +493,7 @@
             this.LoadSSHKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.LoadSSHKey.Image = global::GitUI.Properties.Resources.putty;
             this.LoadSSHKey.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.LoadSSHKey.Location = new System.Drawing.Point(372, 259);
+            this.LoadSSHKey.Location = new System.Drawing.Point(372, 219);
             this.LoadSSHKey.Name = "LoadSSHKey";
             this.LoadSSHKey.Size = new System.Drawing.Size(137, 25);
             this.LoadSSHKey.TabIndex = 8;
@@ -571,7 +572,7 @@
             // Pull
             // 
             this.Pull.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Pull.Location = new System.Drawing.Point(12, 259);
+            this.Pull.Location = new System.Drawing.Point(12, 219);
             this.Pull.Name = "Pull";
             this.Pull.Size = new System.Drawing.Size(101, 25);
             this.Pull.TabIndex = 7;
@@ -584,7 +585,7 @@
             this.AcceptButton = this.Push;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(643, 311);
+            this.ClientSize = new System.Drawing.Size(643, 271);
             this.Controls.Add(this.TabControlTagBranch);
             this.Controls.Add(this.LoadSSHKey);
             this.Controls.Add(this.groupBox2);
