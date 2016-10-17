@@ -1,3 +1,4 @@
+
 Changelog
 =========
 ### Version 2.49 (no due date)
@@ -101,7 +102,7 @@ Changelog
 * Fixed issue #2250: Shell Extensions: IsValidGitDir UNC path performance bug fix
 * Fixed issue #2240: Allow push by commit hash
 * Fixed issue #2235: Allow the user to pick Git.exe no matter
-where it is installed on their system
+  where it is installed on their system
 * Fixed issue #2142: Fetch in 2.47.3 creating remote ref from remote HEAD using current local branch's name
 * Fixed issue #2140: Fix slow settings load because of UNC paths
 * Fixed issue #2139: Double click on submodule fails to open the submodule in a new instance of GitExtensions
