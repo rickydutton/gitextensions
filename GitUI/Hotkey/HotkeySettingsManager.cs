@@ -242,7 +242,7 @@ namespace GitUI.Hotkey
                     hk(FileViewer.Commands.TreatFileAsText, Keys.None),
                     hk(FileViewer.Commands.NextChange, Keys.Alt | Keys.Down),
                     hk(FileViewer.Commands.PreviousChange, Keys.Alt | Keys.Up),
-                    hk(FileViewer.Commands.ViewLineOnGitHub, Keys.V)),
+                    hk(FileViewer.Commands.ViewLineOnGitHub, Keys.Alt | Keys.V)),
                 new HotkeySettings(FormResolveConflicts.HotkeySettingsName,
                     hk(FormResolveConflicts.Commands.ChooseBase, Keys.B),
                     hk(FormResolveConflicts.Commands.ChooseLocal, Keys.L),
