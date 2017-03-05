@@ -1660,6 +1660,7 @@ namespace GitUI.CommandsDialogs
 
         private static void SaveApplicationSettings()
         {
+            AppSettings.SaveSettings();
             Properties.Settings.Default.Save();
         }
 
