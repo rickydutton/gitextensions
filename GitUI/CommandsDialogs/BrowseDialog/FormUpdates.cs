@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using Git.hub;
@@ -24,7 +26,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
         public IWin32Window OwnerWindow;
         public Version CurrentVersion;
         public bool UpdateFound;
-        public string UpdateUrl;
+        public string InstallerPath;
         private string _releasePageUrl;
         public string NewVersion;
 
@@ -35,7 +37,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             UpdateFound = false;
             progressBar1.Visible = true;
             CurrentVersion = currentVersion;
-            UpdateUrl = "";
+            InstallerPath = "";
             _releasePageUrl = "";
             NewVersion = "";
             progressBar1.Style = ProgressBarStyle.Marquee;
@@ -117,16 +119,42 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             if (UpdateFound)
             {
                 _releasePageUrl = release.html_url;
-                const string downloadUrlFormat = "https://github.com/EbenZhang/gitextensions/releases/download/{0}/GitExtensions-{0}-Setup.msi";
-                UpdateUrl = string.Format(downloadUrlFormat, release.tag_name);
+                InstallerPath = string.Format("GitExtensions-{0}-Setup.msi", release.tag_name);
+                if (!File.Exists(InstallerPath))
+                {
+                    DeleteOldSetups();
+                    const string downloadUrlFormat =
+                        "https://github.com/EbenZhang/gitextensions/releases/download/{0}/{1}";
+                    var url = string.Format(downloadUrlFormat, release.tag_name, InstallerPath);
+                    using (var client = new WebClient())
+                    {
+                        client.DownloadFile(url, InstallerPath);
+                    }
+                }
                 NewVersion = release.tag_name;
                 Done();
             }
             else
             {
                 _releasePageUrl = "";
-                UpdateUrl = "";
+                InstallerPath = "";
                 Done();
+            }
+        }
+
+        private void DeleteOldSetups()
+        {
+            try
+            {
+                var files = Directory.GetFiles(".", "GitExtensions-*-Setup.msi");
+                foreach (var file in files)
+                {
+                    File.Delete(file);
+                }
+            }
+            catch
+            {
+                // don't care
             }
         }
 
@@ -138,7 +166,7 @@ namespace GitUI.CommandsDialogs.BrowseDialog
 
                 if (UpdateFound)
                 {
-                    btnDownloadNow.Enabled = true;
+                    btnInstallNow.Enabled = true;
                     UpdateLabel.Text = string.Format(_newVersionAvailable.Text, NewVersion);
                     linkChangeLog.Visible = true;
 
@@ -157,14 +185,14 @@ namespace GitUI.CommandsDialogs.BrowseDialog
             Process.Start(_releasePageUrl);
         }
 
-        private void btnDownloadNow_Click(object sender, EventArgs e)
+        private void btnInstallNow_Click(object sender, EventArgs e)
         {
-            try
+            if (InstallerPath.IsNotNullOrWhitespace())
             {
-                Process.Start(UpdateUrl);
-            }
-            catch (System.ComponentModel.Win32Exception)
-            {
+                using (Process.Start(InstallerPath))
+                {
+                    Application.Exit();
+                }
             }
         }
     }
