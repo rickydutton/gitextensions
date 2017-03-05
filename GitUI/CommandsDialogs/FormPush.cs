@@ -106,7 +106,7 @@ namespace GitUI.CommandsDialogs
 
         private void Init()
         {
-            _gitRefs = Module.GetRefs(false, true);
+            _gitRefs = Module.GetRefs(true, true);
             if (GitCommandHelpers.VersionInUse.SupportPushWithRecursiveSubmodulesCheck)
             {
                 RecursiveSubmodules.Enabled = true;
@@ -192,7 +192,7 @@ namespace GitUI.CommandsDialogs
 
         private bool IsBranchKnownToRemote(string remote, string branch)
         {
-            var remoteRefs = _gitRefs.Where(r => r.IsRemote && r.LocalName == branch && r.Remote == remote);
+            var remoteRefs = GetRemoteBranches(remote).Where(r => r.LocalName == branch);
             if (remoteRefs.Any())
                 return true;
 
@@ -581,12 +581,22 @@ namespace GitUI.CommandsDialogs
                     curBranch = HeadText;
             }
 
-            foreach (var head in _gitRefs)
+            foreach (var head in GetLocalBranches())
                 _NO_TRANSLATE_Branch.Items.Add(head);
 
             _NO_TRANSLATE_Branch.Text = curBranch;
 
             ComboBoxHelper.ResizeComboBoxDropDownWidth(_NO_TRANSLATE_Branch, AppSettings.BranchDropDownMinWidth, AppSettings.BranchDropDownMaxWidth);
+        }
+
+        public IEnumerable<IGitRef> GetLocalBranches()
+        {
+            return _gitRefs.Where(r => r.IsHead);
+        }
+
+        public IEnumerable<IGitRef> GetRemoteBranches(String remoteName)
+        {
+            return _gitRefs.Where(r => r.IsRemote && r.Remote == remoteName);
         }
 
         private void PullClick(object sender, EventArgs e)
@@ -596,15 +606,21 @@ namespace GitUI.CommandsDialogs
 
         private void UpdateRemoteBranchDropDown()
         {
-            RemoteBranch.DisplayMember = "Name";
             RemoteBranch.Items.Clear();
 
             if (!string.IsNullOrEmpty(_NO_TRANSLATE_Branch.Text))
                 RemoteBranch.Items.Add(_NO_TRANSLATE_Branch.Text);
 
-            foreach (var head in _gitRefs)
-                if (!RemoteBranch.Items.Contains(head))
-                    RemoteBranch.Items.Add(head);
+            foreach (var head in GetRemoteBranches(_selectedRemote.Name))
+                if (_NO_TRANSLATE_Branch.Text != head.LocalName)
+                    RemoteBranch.Items.Add(head.LocalName);
+
+            var remoteBranchesSet = GetRemoteBranches(_selectedRemote.Name).ToHashSet(b => b.LocalName);
+            var onlyLocalBranches = GetLocalBranches().Where(b => !remoteBranchesSet.Contains(b.LocalName));
+
+            foreach (var head in onlyLocalBranches)
+                if (_NO_TRANSLATE_Branch.Text != head.LocalName)
+                    RemoteBranch.Items.Add(head.LocalName);
 
             ComboBoxHelper.ResizeComboBoxDropDownWidth(RemoteBranch, AppSettings.BranchDropDownMinWidth, AppSettings.BranchDropDownMaxWidth);
         }
@@ -800,11 +816,10 @@ namespace GitUI.CommandsDialogs
                 return;
             }
 
-            var localHeads = _gitRefs.Where(r => r.IsHead).ToList();
-            LoadMultiBranchViewData(_selectedRemote.Name, localHeads);
+            LoadMultiBranchViewData(_selectedRemote.Name);
         }
 
-        private void LoadMultiBranchViewData(string remote, IList<IGitRef> localHeads)
+        private void LoadMultiBranchViewData(string remote)
         {
             Cursor = Cursors.AppStarting;
             try
@@ -837,7 +852,7 @@ namespace GitUI.CommandsDialogs
                     //use remote branches from the git's local database if there were problems with receiving branches from the remote server
                     remoteHeads = Module.GetRemoteBranches().Where(r => r.Remote == remote).ToList();
                 }
-                ProcessHeads(remote, localHeads, remoteHeads);
+                ProcessHeads(remote, remoteHeads);
             }
             finally
             {
@@ -858,8 +873,9 @@ namespace GitUI.CommandsDialogs
             return cmdOutput;
         }
 
-        private void ProcessHeads(string remote, IList<IGitRef> localHeads, IList<IGitRef> remoteHeads)
+        private void ProcessHeads(string remote, IList<IGitRef> remoteHeads)
         {
+            IList<IGitRef> localHeads = GetLocalBranches().ToList();
             var remoteBranches = remoteHeads.ToHashSet(h => h.LocalName);
             // Add all the local branches.
             foreach (var head in localHeads)

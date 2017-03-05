@@ -219,7 +219,8 @@ namespace GitUI
                 _normalFont = value;
                 MessageDataGridViewColumn.DefaultCellStyle.Font = _normalFont;
                 DateDataGridViewColumn.DefaultCellStyle.Font = _normalFont;
-                IdDataGridViewColumn.DefaultCellStyle.Font = new Font("Consolas", _normalFont.SizeInPoints);
+                _fontOfSHAColumn = new Font("Consolas", _normalFont.SizeInPoints);
+                IdDataGridViewColumn.DefaultCellStyle.Font = _fontOfSHAColumn;
                 IsMessageMultilineDataGridViewColumn.DefaultCellStyle.Font = _normalFont;
 
                 RefsFont = IsFilledBranchesLayout() ? _normalFont : new Font(_normalFont, FontStyle.Bold);
@@ -1506,7 +1507,7 @@ namespace GitUI
 
                     var text = (string)e.FormattedValue;
                     var bounds = AdjustCellBounds(e.CellBounds, offset);
-                    DrawColumnText(e.Graphics, text, rowFont, foreColor, bounds);
+                    RevisionGridUtils.DrawColumnText(e.Graphics, text, rowFont, foreColor, bounds);
 
                     if (IsCardLayout())
                     {
@@ -1569,8 +1570,9 @@ namespace GitUI
                     if (!revision.IsArtificial())
                     {
                         var text = revision.Guid;
-                        e.Graphics.DrawString(text, new Font("Consolas", rowFont.SizeInPoints), foreBrush,
-                                              new PointF(e.CellBounds.Left, e.CellBounds.Top + 4));
+                        var rect = RevisionGridUtils.GetCellRectangle(e);
+                        RevisionGridUtils.DrawColumnText(e.Graphics, text, _fontOfSHAColumn,
+                            foreColor, rect);
                     }
                 }
                 else if (columnIndex == BuildServerWatcher.BuildStatusImageColumnIndex)
@@ -1579,7 +1581,7 @@ namespace GitUI
                 }
                 else if (columnIndex == BuildServerWatcher.BuildStatusMessageColumnIndex)
                 {
-                    BuildInfoDrawingLogic.BuildStatusMessageCellPainting(e, revision, foreBrush, rowFont);
+                    BuildInfoDrawingLogic.BuildStatusMessageCellPainting(e, revision, foreColor, rowFont);
                 }
                 else if (AppSettings.ShowIndicatorForMultilineMessage && columnIndex == isMsgMultilineColIndex)
                 {
@@ -1645,7 +1647,7 @@ namespace GitUI
                     headBounds.Offset((int)(extraOffset + 1), 0);
                 }
 
-                DrawColumnText(drawRefArgs.Graphics, headName, drawRefArgs.RefsFont, textColor, headBounds);
+                RevisionGridUtils.DrawColumnText(drawRefArgs.Graphics, headName, drawRefArgs.RefsFont, textColor, headBounds);
             }
 
             return offset;
@@ -1752,11 +1754,6 @@ namespace GitUI
                 }
                 Revisions.InvalidateCell(colIndex, rowIndex);
             });
-        }
-
-        private void DrawColumnText(Graphics gc, string text, Font font, Color color, Rectangle bounds)
-        {
-            TextRenderer.DrawText(gc, text, font, bounds, color, TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
         }
 
         private static Rectangle AdjustCellBounds(Rectangle cellBounds, float offset)
@@ -2637,6 +2634,7 @@ namespace GitUI
         }
 
         private bool _settingsLoaded;
+        private Font _fontOfSHAColumn;
 
         private void RunScript(object sender, EventArgs e)
         {
