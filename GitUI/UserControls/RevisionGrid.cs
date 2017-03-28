@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.DirectoryServices;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -55,7 +56,7 @@ namespace GitUI
         private readonly TranslationString _baseForCompareNotSelectedError = new TranslationString("Base commit for compare is not selected.");
         private readonly TranslationString _strError = new TranslationString("Error");
 
-        private const int NodeDimension = 8;
+        private const int NodeDimension = 10;
         private const int LaneWidth = 13;
         private const int LaneLineWidth = 2;
         private const int MaxSuperprojectRefs = 4;
@@ -322,6 +323,7 @@ namespace GitUI
             _initialSelectedRevision = initialSelectedRevision != null ? initialSelectedRevision.Guid : null;
         }
 
+        private bool _isRefreshingRevisions = false;
         private bool _isLoading;
         private void RevisionsLoading(object sender, DvcsGraph.LoadingEventArgs e)
         {
@@ -716,7 +718,16 @@ namespace GitUI
             _parentChildNavigationHistory.RevisionsSelectionChanged();
 
             if (Revisions.SelectedRows.Count > 0)
+            {
                 LastRowIndex = Revisions.SelectedRows[0].Index;
+                //if there was selected a new revision while data is being loaded
+                //then don't change the new selection when restoring selected revisions after data is loaded
+                if (_isRefreshingRevisions && !Revisions.UpdatingVisibleRows)
+                {
+                    LastSelectedRows = Revisions.SelectedIds;
+                }
+
+            }
 
             SelectionTimer.Enabled = false;
             SelectionTimer.Stop();
@@ -999,6 +1010,7 @@ namespace GitUI
                 Loading.Visible = true;
                 Loading.BringToFront();
                 _isLoading = true;
+                _isRefreshingRevisions = true;
                 base.Refresh();
 
                 IndexWatcher.Reset();
@@ -1181,6 +1193,7 @@ namespace GitUI
                                           //NoCommits.BringToFront();
                                           Revisions.Visible = false;
                                           Loading.Visible = false;
+                                          _isRefreshingRevisions = false;
                                       }, this);
             }
             else
@@ -1190,8 +1203,8 @@ namespace GitUI
                                       {
                                           UpdateGraph(null);
                                           Loading.Visible = false;
+                                          _isRefreshingRevisions = false;
                                           SelectInitialRevision();
-                                          _isLoading = false;
                                           if (ShowBuildServerInfo)
                                               BuildServerWatcher.LaunchBuildServerInfoFetchOperation();
                                       }, this);
@@ -1329,12 +1342,6 @@ namespace GitUI
             int idColIndex = IdDataGridViewColumn.Index;
             int isMsgMultilineColIndex = IsMessageMultilineDataGridViewColumn.Index;
 
-            // The graph column is handled by the DvcsGraph
-            if (e.ColumnIndex == graphColIndex)
-            {
-                return;
-            }
-
             if (e.RowIndex < 0 || (e.State & DataGridViewElementStates.Visible) == 0)
                 return;
 
@@ -1371,7 +1378,22 @@ namespace GitUI
             }
             else
             {
-                e.Graphics.FillRectangle(Brushes.White, e.CellBounds);
+                if (e.RowIndex % 2 == 0)
+                {
+                    e.Graphics.FillRectangle(Brushes.White, e.CellBounds);
+                }
+                else
+                {
+                    Brush brush = new SolidBrush(Color.FromArgb(255, 240, 240, 240));
+                    e.Graphics.FillRectangle(brush, e.CellBounds);
+                }
+                    
+            }
+
+            if (e.ColumnIndex == graphColIndex)
+            {
+                Revisions.dataGrid_CellPainting(sender, e);
+                return;
             }
 
             Color foreColor;
@@ -1936,10 +1958,12 @@ namespace GitUI
             var selectedRevisions = GetSelectedRevisions();
             if (selectedRevisions.Any(rev => !GitRevision.IsArtificial(rev.Guid)))
             {
-                using (var form = new FormCommitDiff(UICommands, selectedRevisions[0].Guid))
+                Func<Form> provideForm = () =>
                 {
-                    form.ShowDialog(this);
-                }
+                    return new FormCommitDiff(UICommands, selectedRevisions[0].Guid);
+                };
+
+                UICommands.ShowModelessForm(this, false, null, null, provideForm);
             }
             else if (!selectedRevisions.Any())
             {
@@ -2280,6 +2304,8 @@ namespace GitUI
             manipulateCommitToolStripMenuItem.Enabled = !bareRepository;
 
             toolStripSeparator6.Enabled = branchNameCopyToolStripMenuItem.Enabled || tagNameCopyToolStripMenuItem.Enabled;
+
+            openBuildReportToolStripMenuItem.Visible = (revision.BuildStatus != null && !string.IsNullOrWhiteSpace(revision.BuildStatus.Url));
 
             RefreshOwnScripts();
         }
@@ -2855,7 +2881,7 @@ namespace GitUI
                 _selectedItemBrush = _filledItemBrush;
 
                 Revisions.ShowAuthor(!IsCardLayout());
-                Revisions.SetDimensions(NodeDimension, LaneWidth, LaneLineWidth, _rowHeigth, _selectedItemBrush);
+                Revisions.SetDimensions(NodeDimension, LaneWidth, LaneLineWidth, _rowHeigth);
 
             }
             else
@@ -2883,7 +2909,7 @@ namespace GitUI
                 }
 
                 Revisions.ShowAuthor(!IsCardLayout());
-                Revisions.SetDimensions(NodeDimension, LaneWidth, LaneLineWidth, _rowHeigth, _selectedItemBrush);
+                Revisions.SetDimensions(NodeDimension, LaneWidth, LaneLineWidth, _rowHeigth);
             }
 
             //Hide graph column when there it is disabled OR when a filter is active
@@ -3194,6 +3220,13 @@ namespace GitUI
         {
             string url = UserManual.UserManual.UrlFor("modify_history", "using-autosquash-rebase-feature");
             OsShellUtil.OpenUrlInDefaultBrowser(url);
+        }
+
+        private void openBuildReportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var revision = this.GetSelectedRevisions().First();
+            if(revision.BuildStatus != null && !string.IsNullOrWhiteSpace(revision.BuildStatus.Url))
+                Process.Start(revision.BuildStatus.Url); 
         }
     }
 }

@@ -1,6 +1,35 @@
 
 Changelog
 =========
+### Version 2.49.03 (26 March 2017)
+* Fixed issue #3605. NullReferenceException from CanBeGitUrl when trying to clone git repository from dashboard.
+* Fixed issue #3578. File history and blame not show when path to file contain cyrilic chars bug reproducible.
+
+### Version 2.49.02 (22 March 2017)
+* Fixed issue #3464. Background fetch plugin - Not working.
+* Fixed issue #3491. 'Enter commit message' does not disappear when you start typing your message bug reproducible.
+* Fixed issue #3394. Gitext Clone in Explorer Context Menu try to clone in the wrong folder bug.
+* Fixed issue #3142. Comparing A/B/Working directory with diff tool UX.
+* Fixed issue #3589. Option 'Close dialog when all changes are committed' does not work properly bug
+* Fixed issue #3569. Windows OS version string is incorrect for 8, 8.1, and 10.
+* Fixed issue #3539. Non-sequential tab ordering on Settings -> Advanced -> Confirmations page.
+* Fixed issue #3554. Comparing branch form didn't honor the ShowMoreContext toolbar button.
+* Fix problem with incorrect building command line arguments. PR #3551
+
+### Version 2.49.01 (12 March 2017)
+* Fixed issue #3587. Diff view is blank if git configuration is diff.color=always 
+* Fixed issue #3427. Pushing to a different remote wrongly ask about new branch bug.
+* Fixed issue #3560. GitExtensions doesn't respect core.commentChar setting in interactive rebase.
+* Fixed issue #3507. Branch normalization strips valid characters from the branch name.
+* Fixed issue #3372. Create tag: set focus to tag name first feature-request UX.
+* Fixed issue #3441. Prompt to commit after resolving merge conflicts even when "Do not commit" is checked bug.
+* Fixed issue #3445. "Reset file(s) to" functionality doesn't work bug.
+* Fixed issue #2679. "Unsupported file" error with submodules
+* Fixed issue #3434. Filtering commits by unicode search text fails bug
+* Fixed issue #3412. Fix reset file menu item text.
+* Fix "Host Fingerprint not registered" Plink handling on clone. PR #3405
+* Fix crash when one of the stash is an autostash. PR #3410
+
 ### Version 2.49 (9 November 2016)
 * Updated Git for Windows to version 2.10.1. PR #3353
 * Updated Putty to version 0.67

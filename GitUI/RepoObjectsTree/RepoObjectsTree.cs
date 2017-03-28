@@ -13,11 +13,16 @@ namespace GitUI.UserControls
     /// <summary>Tree-like structure for a repo's objects.</summary>
     public partial class RepoObjectsTree : GitModuleControl
     {
+        private readonly TranslationString showBranchOnly =
+            new TranslationString("Filter the revision grid to show this branch only\nTo show all branches, right click the revision grid, select 'view' and then the 'show all branches'");
+
+        public FilterBranchHelper FilterBranchHelper { private get; set; }
+
         List<Tree> rootNodes = new List<Tree>();
         /// <summary>Image key for a head branch.</summary>
         static readonly string headBranchKey = Guid.NewGuid().ToString();
-        private SearchControl<string> txtBranchFilter;
-        private readonly HashSet<string> _branchFilterAutoCompletionSrc = new HashSet<string>();
+        private SearchControl<string> txtBranchCriterion;
+        private readonly HashSet<string> _branchCriterionAutoCompletionSrc = new HashSet<string>();
 
         public RepoObjectsTree()
         {
@@ -35,32 +40,34 @@ namespace GitUI.UserControls
             treeMain.HideSelection = false;
             treeMain.NodeMouseClick += OnNodeClick;
             treeMain.NodeMouseDoubleClick += OnNodeDoubleClick;
+            mnubtnFilterRemoteBranchInRevisionGrid.ToolTipText = showBranchOnly.Text;
+            mnubtnFilterLocalBranchInRevisionGrid.ToolTipText = showBranchOnly.Text;
         }
 
         private void InitiliazeSearchBox()
         {
-            txtBranchFilter = new SearchControl<string>(FilterBranch, i => { });
-            txtBranchFilter.OnTextEntered += () =>
+            txtBranchCriterion = new SearchControl<string>(SearchForBranch, i => { });
+            txtBranchCriterion.OnTextEntered += () =>
             {
-                OnBranchFilterChanged(null, null);
+                OnBranchCriterionChanged(null, null);
                 OnBtnSearchClicked(null, null);
             };
             //
-            // txtBranchFilter
+            // txtBranchCriterion
             //
-            this.txtBranchFilter.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            this.txtBranchFilter.Name = "txtBranchFilter";
-            this.txtBranchFilter.TabIndex = 1;
-            this.txtBranchFilter.TextChanged += OnBranchFilterChanged;
-            this.txtBranchFilter.KeyDown += txtBranchFilter_KeyDown;
-            this.branchFilterPanel.Controls.Add(txtBranchFilter, 1, 0);
+            this.txtBranchCriterion.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            this.txtBranchCriterion.Name = "txtBranchCritierion";
+            this.txtBranchCriterion.TabIndex = 1;
+            this.txtBranchCriterion.TextChanged += OnBranchCriterionChanged;
+            this.txtBranchCriterion.KeyDown += txtBranchCriterion_KeyDown;
+            this.branchSearchPanel.Controls.Add(txtBranchCriterion, 1, 0);
 
-            txtBranchFilter.PreviewKeyDown += OnPreviewKeyDown;
+            txtBranchCriterion.PreviewKeyDown += OnPreviewKeyDown;
         }
 
-        private IList<string> FilterBranch(string arg)
+        private IList<string> SearchForBranch(string arg)
         {
-            return _branchFilterAutoCompletionSrc
+            return _branchCriterionAutoCompletionSrc
                 .Where(r => r.IndexOf(arg, StringComparison.OrdinalIgnoreCase) != -1)
                 .ToList();
         }
@@ -78,8 +85,6 @@ namespace GitUI.UserControls
             base.OnUICommandsSourceChanged(sender, newSource);
 
             CancelBackgroundTasks();
-
-            DragDrops();
 
             var localBranchesRootNode = new TreeNode(Strings.branches.Text)
             {
@@ -118,13 +123,13 @@ namespace GitUI.UserControls
                     .Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)
                     .LastOrDefault();
 
-            _branchFilterAutoCompletionSrc.Add(branchFullPath);
+            _branchCriterionAutoCompletionSrc.Add(branchFullPath);
 
             if(lastPart != null && lastPart != branchFullPath)
             {
-                if (!_branchFilterAutoCompletionSrc.Contains(lastPart))
+                if (!_branchCriterionAutoCompletionSrc.Contains(lastPart))
                 {
-                    _branchFilterAutoCompletionSrc.Add(lastPart);
+                    _branchCriterionAutoCompletionSrc.Add(lastPart);
                 }
             }
         }
@@ -157,7 +162,7 @@ namespace GitUI.UserControls
                 {
                     Task.WaitAll(_tasks);
                 }
-                _branchFilterAutoCompletionSrc.Clear();
+                _branchCriterionAutoCompletionSrc.Clear();
             }
             _cancelledTokenSource = new CancellationTokenSource();
         }
@@ -184,7 +189,7 @@ namespace GitUI.UserControls
                     {
                         var autoCompletionSrc = new AutoCompleteStringCollection();
                         autoCompletionSrc.AddRange(
-                            _branchFilterAutoCompletionSrc.ToArray());
+                            _branchCriterionAutoCompletionSrc.ToArray());
                     }));
                 }, _cancelledTokenSource.Token);
             _tasks.ToList().ForEach(t => t.Start());
@@ -222,7 +227,7 @@ namespace GitUI.UserControls
 
         private void OnBtnSearchClicked(object sender, EventArgs e)
         {
-            txtBranchFilter.CloseDropdown();
+            txtBranchCriterion.CloseDropdown();
             if (_searchCriteriaChanged && _searchResult != null && _searchResult.Any())
             {
                 _searchCriteriaChanged = false;
@@ -231,17 +236,17 @@ namespace GitUI.UserControls
                     coloredNode.BackColor = SystemColors.Window;
                 }
                 _searchResult = null;
-                if (txtBranchFilter.Text.IsNullOrWhiteSpace())
+                if (txtBranchCriterion.Text.IsNullOrWhiteSpace())
                 {
-                    txtBranchFilter.Focus();
+                    txtBranchCriterion.Focus();
                     return;
                 }
             }
             if (_searchResult == null || !_searchResult.Any())
             {
-                if (txtBranchFilter.Text.IsNotNullOrWhitespace())
+                if (txtBranchCriterion.Text.IsNotNullOrWhitespace())
                 {
-                    _searchResult = SearchTree(txtBranchFilter.Text, treeMain.Nodes);
+                    _searchResult = SearchTree(txtBranchCriterion.Text, treeMain.Nodes);
                 }
             }
             var node = GetNextSearchResult();
@@ -296,18 +301,39 @@ namespace GitUI.UserControls
             return node;
         }
 
-        private void OnBranchFilterChanged(object sender, EventArgs e)
+        private void OnBranchCriterionChanged(object sender, EventArgs e)
         {
             _searchCriteriaChanged = true;
         }
 
-        private void txtBranchFilter_KeyDown(object sender, KeyEventArgs e)
+        private void txtBranchCriterion_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 OnBtnSearchClicked(null, null);
                 e.Handled = true;
             }
+        }
+
+        /// <summary>Occurs when a <see cref="TreeNode"/> is selected.</summary>
+        void OnNodeSelected(object sender, TreeViewEventArgs e)
+        {
+            Node.OnNode<Node>(e.Node, node => node.OnSelected());
+        }
+
+        /// <summary>Occurs when a <see cref="TreeNode"/> is clicked.</summary>
+        void OnNodeClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            treeMain.SelectedNode = e.Node;
+            Node.OnNode<Node>(e.Node, node => node.OnClick());
+        }
+
+        /// <summary>Occurs when a <see cref="TreeNode"/> is double-clicked.
+        /// <remarks>Expand/Collapse still executes for any node with children.</remarks></summary>
+        void OnNodeDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            // When folding/unfolding a node, e.Node won't be the one you double clicked, but a child node instead
+            Node.OnNode<Node>(treeMain.SelectedNode, node => node.OnDoubleClick());
         }
     }
 }

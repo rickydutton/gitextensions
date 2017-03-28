@@ -372,7 +372,7 @@ namespace GitCommands
 
         public static string GravatarCachePath
         {
-            get { return ApplicationDataPath.Value + "Images\\"; }
+            get { return Path.Combine(ApplicationDataPath.Value, "Images\\"); }
         }
 
         public static string Translation
@@ -845,6 +845,12 @@ namespace GitCommands
         {
             get { return GetInt("commitdialogrightsplitter", -1); }
             set { SetInt("commitdialogrightsplitter", value); }
+        }
+
+        public static bool CommitDialogSelectionFilter 
+        {
+            get { return GetBool("commitdialogselectionfilter", false); }
+            set { SetBool("commitdialogselectionfilter", value); }
         }
 
         public static string DefaultCloneDestinationPath
