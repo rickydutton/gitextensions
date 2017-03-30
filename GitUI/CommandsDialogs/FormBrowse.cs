@@ -3530,7 +3530,7 @@ namespace GitUI.CommandsDialogs
 
         private void reportAnIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Process.Start(@"https://github.com/EbenZhang/gitextensions/issues/new?body=" + WebUtility.HtmlEncode(issueData));
+            Process.Start(@"https://github.com/EbenZhang/gitextensions/issues/new");
         }
         private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
