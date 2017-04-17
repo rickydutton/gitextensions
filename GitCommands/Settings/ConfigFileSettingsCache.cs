@@ -123,9 +123,9 @@ namespace GitCommands.Settings
                 }
             });
         }
-        public IEnumerable<ConfigSection> GetConfigSections(string configSectionName)
+        public IEnumerable<IConfigSection> GetConfigSections(string configSectionName)
         {
-            return LockedAction < IEnumerable<ConfigSection>>(() =>
+            return LockedAction < IEnumerable<IConfigSection>>(() =>
             {
                 EnsureSettingsAreUpToDate();
                 return _configFile.Value.GetConfigSections(configSectionName);
