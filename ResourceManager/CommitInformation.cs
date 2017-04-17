@@ -42,7 +42,7 @@ namespace ResourceManager
         /// Gets the commit info from CommitData.
         /// </summary>
         /// <returns></returns>
-        public static CommitInformatiojj,u-¡¿b cn GetCommitInfo(CommitData data, bool showRevisionsAsLinks, GitModule module = null)
+        public static CommitInformation GetCommitInfo(CommitData data, bool showRevisionsAsLinks, GitModule module = null)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
