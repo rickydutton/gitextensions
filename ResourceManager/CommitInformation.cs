@@ -42,7 +42,7 @@ namespace ResourceManager
         /// Gets the commit info from CommitData.
         /// </summary>
         /// <returns></returns>
-        public static CommitInformation GetCommitInfo(CommitData data, bool showRevisionsAsLinks, GitModule module = null)
+        public static CommitInformation GetCommitInfo(CommitData data, bool showRevisionsAsLinks, IGitRevisionProvider module = null)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
@@ -55,7 +55,7 @@ namespace ResourceManager
             return new CommitInformation(header, body);
         }
 
-        private static string ProcessHashCandidate(GitModule module, string hash)
+        private static string ProcessHashCandidate(IGitRevisionProvider module, string hash)
         {
             if (module == null)
                 return hash;
