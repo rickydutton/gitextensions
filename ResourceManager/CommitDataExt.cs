@@ -88,7 +88,7 @@ namespace ResourceManager
                 if (showRevisionsAsLinks)
                 {
                     commitsString = commitData.ChildrenGuids
-                        .Select(c => LinkFactory.CreateCommitLink(c) + " " + GetCommitSubject(c, module))
+                        .Select(g => LinkFactory.CreateCommitLink(g) + " " + GetCommitSubject(g, module))
                         .Join(Environment.NewLine + indent);
                 }
                 else
@@ -110,7 +110,7 @@ namespace ResourceManager
                 if (showRevisionsAsLinks)
                 {
                     commitsString = parentGuids
-                        .Select(c => LinkFactory.CreateCommitLink(c) + " " + GetCommitSubject(c, module))
+                        .Select(g => LinkFactory.CreateCommitLink(g) + " " + GetCommitSubject(g, module))
                         .Join(Environment.NewLine + indent);
                 }
                 else

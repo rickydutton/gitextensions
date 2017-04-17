@@ -42,7 +42,7 @@ namespace ResourceManager
         /// Gets the commit info from CommitData.
         /// </summary>
         /// <returns></returns>
-        public static CommitInformation GetCommitInfo(IGitRevisionProvider module, CommitData data, bool showRevisionsAsLinks)
+        public static CommitInformatiojj,u-¡¿b cn GetCommitInfo(CommitData data, bool showRevisionsAsLinks, GitModule module = null)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
@@ -50,7 +50,19 @@ namespace ResourceManager
             string header = data.GetHeader(module, showRevisionsAsLinks);
             string body = "\n" + WebUtility.HtmlEncode(data.Body.Trim());
 
+            if (showRevisionsAsLinks)
+                body = GitRevision.Sha1HashShortRegex.Replace(body, match => ProcessHashCandidate(module, hash: match.Value));
             return new CommitInformation(header, body);
+        }
+
+        private static string ProcessHashCandidate(GitModule module, string hash)
+        {
+            if (module == null)
+                return hash;
+            string fullHash;
+            if (!module.IsExistingCommitHash(hash, out fullHash))
+                return hash;
+            return LinkFactory.CreateCommitLink(guid: fullHash, linkText: hash, preserveGuidInLinkText: true);
         }
     }
 }
