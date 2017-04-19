@@ -114,7 +114,7 @@ namespace GitUI.UserControls
 
             var startinfo = new ConEmuStartInfo();
             startinfo.ConsoleProcessCommandLine = cmdl.ToString();
-            startinfo.ConsoleProcessExtraArgs = " -cur_console:P:\"<Solarized Light>\"";
+            startinfo.ConsoleProcessExtraArgs = " -cur_console:P:\"<Ubuntu>\"";
             startinfo.StartupDirectory = workdir;
             startinfo.WhenConsoleProcessExits = WhenConsoleProcessExits.KeepConsoleEmulatorAndShowMessage;
             startinfo.AnsiStreamChunkReceivedEventSink = (sender, args) =>
