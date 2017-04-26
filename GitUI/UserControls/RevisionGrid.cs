@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using GitCommands;
 using GitCommands.Config;
 using GitCommands.Git;
+using GitCommands.Settings;
 using GitUI.BuildServerIntegration;
 using GitUI.CommandsDialogs;
 using GitUI.HelperDialogs;
@@ -24,6 +25,8 @@ using Gravatar;
 using ResourceManager;
 using GitUI.UserControls.RevisionGridClasses;
 using GitUI.CommandsDialogs.BrowseDialog;
+using GitUI.IssueTrackerIntegration;
+using GitUI.IssueTrackerIntegrationIntegration;
 using GitUI.UserControls;
 
 namespace GitUI
@@ -74,6 +77,8 @@ namespace GitUI
         private RevisionGraph _revisionGraphCommand;
 
         public BuildServerWatcher BuildServerWatcher { get; private set; }
+        public IssueTrackerWatcher IssueTrackerWatcher { get; private set; }
+
 
         private RevisionGridLayout _layout;
         private int _rowHeigth;
@@ -619,6 +624,7 @@ namespace GitUI
             Loading.BringToFront();
 
             BuildServerWatcher = new BuildServerWatcher(this, Revisions);
+            IssueTrackerWatcher = new IssueTrackerWatcher(this, Revisions);
         }
 
         public new void Load()
@@ -917,6 +923,7 @@ namespace GitUI
                 _initialLoad = true;
 
                 BuildServerWatcher.CancelBuildStatusFetchOperation();
+                IssueTrackerWatcher.CancelIssueTrackerFetchOperation();
 
                 DisposeRevisionGraphCommand();
 
@@ -1181,6 +1188,8 @@ namespace GitUI
                                           _isLoading = false;
                                           if (ShowBuildServerInfo)
                                               BuildServerWatcher.LaunchBuildServerInfoFetchOperation();
+                             
+                                          IssueTrackerWatcher.LaunchIssueTrackerInfoFetchOperation();
                                       }, this);
             }
 
@@ -1564,6 +1573,10 @@ namespace GitUI
                 {
                     BuildInfoDrawingLogic.BuildStatusMessageCellPainting(e, revision, foreBrush, rowFont);
                 }
+                else if (columnIndex == IssueTrackerWatcher.IssueStatusMessageColumnIndex)
+                {
+                    IssueInfoDrawingLogic.IssueStatusMessageCellPainting(e, revision, foreBrush, rowFont);
+                }
                 else if (AppSettings.ShowIndicatorForMultilineMessage && columnIndex == isMsgMultilineColIndex)
                 {
                     var text = (string)e.FormattedValue;
@@ -1682,6 +1695,10 @@ namespace GitUI
             else if (columnIndex == BuildServerWatcher.BuildStatusMessageColumnIndex)
             {
                 BuildInfoDrawingLogic.BuildStatusMessageCellFormatting(e, revision);
+            }
+            else if (columnIndex == IssueTrackerWatcher.IssueStatusMessageColumnIndex)
+            {
+                IssueInfoDrawingLogic.IssueStatusMessageCellFormatting(e, revision);
             }
             else if (AppSettings.ShowIndicatorForMultilineMessage && columnIndex == isMsgMultilineColIndex)
             {

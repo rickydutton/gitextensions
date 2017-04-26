@@ -17,6 +17,8 @@ namespace GitUI.CommandsDialogs.BrowseDialog.DashboardControl
 {
     public partial class Dashboard : GitModuleControl
     {
+        private bool _isCow = GitCommands.AppSettings.IconStyle.Equals("Cow", StringComparison.OrdinalIgnoreCase);
+
         private readonly TranslationString cloneFork = new TranslationString("Clone {0} repository");
         private readonly TranslationString cloneRepository = new TranslationString("Clone repository");
         private readonly TranslationString cloneSvnRepository = new TranslationString("Clone SVN repository");

@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Forms;
 using GitCommands;
 using GitCommands.GitExtLinks;
+using GitExtUtils;
 using GitUI.Editor.RichTextBoxExtension;
 using ResourceManager;
 
@@ -17,6 +18,8 @@ namespace GitUI.CommitInfo
 {
     public partial class CommitInfo : GitModuleControl
     {
+        private const string relatesToJiraStory = "Jira Stories:";
+        private const string relatesToNoJiraStory = "References no Jira Stories";
         private readonly TranslationString containedInBranches = new TranslationString("Contained in branches:");
         private readonly TranslationString containedInNoBranch = new TranslationString("Contained in no branch");
         private readonly TranslationString containedInTags = new TranslationString("Contained in tags:");
@@ -133,6 +136,7 @@ namespace GitUI.CommitInfo
         private string _tagInfo;
         private List<string> _branches;
         private string _branchInfo;
+        private string _jiraInfo;
         private IList<string> _sortedRefs;
 
         private void ReloadCommitInfo()
@@ -294,10 +298,11 @@ namespace GitUI.CommitInfo
                         _branches.RemoveRange(MaximumDisplayedRefs, _branches.Count - MaximumDisplayedRefs);
                     }
                     _branchInfo = GetBranchesWhichContainsThisCommit(_branches, ShowBranchesAsLinks);
+                    _jiraInfo = GetRelatedJiraStories(_branches, _revision.Body);
                 }
             }
             RevisionInfo.SuspendLayout();
-            RevisionInfo.SetXHTMLText(_revisionInfo + "\n\n" + _linksInfo + _branchInfo + _tagInfo);
+            RevisionInfo.SetXHTMLText(_revisionInfo + "\n\n" + _jiraInfo + _linksInfo + _branchInfo + _tagInfo);
             RevisionInfo.SelectionStart = 0; //scroll up
             RevisionInfo.ScrollToCaret();    //scroll up
             RevisionInfo.ResumeLayout(true);
@@ -308,6 +313,7 @@ namespace GitUI.CommitInfo
             _revisionInfo = string.Empty;
             _linksInfo = string.Empty;
             _branchInfo = string.Empty;
+            _jiraInfo = string.Empty;
             _tagInfo = string.Empty;
             _branches = null;
             _tags = null;
@@ -373,6 +379,46 @@ namespace GitUI.CommitInfo
             if (links.Any())
                 return Environment.NewLine + WebUtility.HtmlEncode(containedInBranches.Text) + " " + links.Join(", ");
             return Environment.NewLine + WebUtility.HtmlEncode(containedInNoBranch.Text);
+        }
+
+        private string GetRelatedJiraStories(List<string> branches, string body)
+        {
+            var regex = new Regex("([\\[]*[bB][aA][cC]-[\\d]{1,6}[\\]]*)");
+            var links = new List<string>();
+
+            //if (!string.IsNullOrWhiteSpace(body))
+            //{
+            //    foreach (var match in regex.Matches(body))
+            //    {
+            //        links.Add(Settings.JiraBaseUrl + match.ToString().Replace("[","").Replace("]",""));
+            //    }
+            //}
+
+            if (!string.IsNullOrWhiteSpace(body))
+                links.AddRange(body.GetJiraStoriesAsLinks());
+
+            //if (branches.Any())
+            //{
+            //    foreach (var branch in branches)
+            //    {
+            //        foreach (var match in regex.Matches(branch))
+            //        {
+            //            links.Add(Settings.JiraBaseUrl + match.ToString().Replace("[", "").Replace("]", ""));
+            //        }
+            //    }
+            //}
+
+            if (branches.Any())
+            {
+                foreach (var branch in branches)
+                {
+                    links.AddRange(branch.GetJiraStoriesAsLinks());
+                }
+            }
+
+            if (links.Any())
+                return Environment.NewLine + WebUtility.HtmlEncode(relatesToJiraStory) + " " + links.Distinct().Join(", ");
+            return Environment.NewLine + WebUtility.HtmlEncode(relatesToNoJiraStory);
         }
 
         private string GetTagsWhichContainsThisCommit(IEnumerable<string> tags, bool showBranchesAsLinks)

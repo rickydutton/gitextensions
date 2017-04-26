@@ -187,7 +187,7 @@ namespace TeamCityIntegration
         private void NotifyObserverOfBuilds(string[] buildIds, IObserver<BuildInfo> observer, CancellationToken cancellationToken)
         {
             var tasks = new List<Task>(8);
-            var buildsLeft = buildIds.Length;
+            var  buildsLeft = buildIds.Length;
 
             foreach (var buildId in buildIds.OrderByDescending(int.Parse))
             {
@@ -211,9 +211,9 @@ namespace TeamCityIntegration
                             TaskScheduler.Current);
                 
                 tasks.Add(notifyObserverTask);
-                --buildsLeft;
+                -- buildsLeft;
 
-                if (tasks.Count == tasks.Capacity || buildsLeft == 0)
+                if (tasks.Count == tasks.Capacity ||  buildsLeft == 0)
                 {
                     var batchTasks = tasks.ToArray();
                     tasks.Clear();

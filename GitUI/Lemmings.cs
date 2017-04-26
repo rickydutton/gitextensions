@@ -16,7 +16,7 @@ namespace GitUI
                 {
                     return Resources.Cow_xmass;
                 } else
-                    if (currentDate.Month == 6 && currentDate.Day == 21) //summer
+                    if (currentDate.Month > 4 && currentDate.Month <= 7) //summer
                     {
                         return Resources.Cow_sunglass;
                     }

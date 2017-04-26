@@ -42,8 +42,7 @@
             this.chkAddNewlineToCommitMessageWhenMissing = new System.Windows.Forms.CheckBox();
             this.groupBoxBehaviour.SuspendLayout();
             this.tableLayoutPanelBehaviour.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize) (this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages))
-                .BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages)).BeginInit();
             this.grpAdditionalButtons.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -55,7 +54,7 @@
             this.groupBoxBehaviour.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBoxBehaviour.Location = new System.Drawing.Point(0, 0);
             this.groupBoxBehaviour.Name = "groupBoxBehaviour";
-            this.groupBoxBehaviour.Size = new System.Drawing.Size(1302, 244);
+            this.groupBoxBehaviour.Size = new System.Drawing.Size(1146, 244);
             this.groupBoxBehaviour.TabIndex = 56;
             this.groupBoxBehaviour.TabStop = false;
             this.groupBoxBehaviour.Text = "Behaviour";
@@ -83,37 +82,30 @@
             this.tableLayoutPanelBehaviour.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelBehaviour.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelBehaviour.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanelBehaviour.Size = new System.Drawing.Size(1296, 222);
+            this.tableLayoutPanelBehaviour.Size = new System.Drawing.Size(1140, 222);
             this.tableLayoutPanelBehaviour.TabIndex = 57;
             // 
             // _NO_TRANSLATE_CommitDialogNumberOfPreviousMessages
             // 
-            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Location = new System.Drawing.Point(356, 93);
-            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Maximum = new decimal(new int[]
-            {
-                10,
-                0,
-                0,
-                0
-            });
-            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Minimum = new decimal(new int[]
-            {
-                1,
-                0,
-                0,
-                0
-            });
-            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Name =
-                "_NO_TRANSLATE_CommitDialogNumberOfPreviousMessages";
+            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Location = new System.Drawing.Point(338, 93);
+            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Name = "_NO_TRANSLATE_CommitDialogNumberOfPreviousMessages";
             this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Size = new System.Drawing.Size(123, 23);
             this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.TabIndex = 3;
-            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Value = new decimal(new int[]
-            {
-                1,
-                0,
-                0,
-                0
-            });
+            this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // lblCommitDialogNumberOfPreviousMessages
             // 
@@ -142,9 +134,8 @@
             this.chkWriteCommitMessageInCommitWindow.Name = "chkWriteCommitMessageInCommitWindow";
             this.chkWriteCommitMessageInCommitWindow.Size = new System.Drawing.Size(329, 34);
             this.chkWriteCommitMessageInCommitWindow.TabIndex = 1;
-            this.chkWriteCommitMessageInCommitWindow.Text =
-                "Compose commit messages in Commit dialog\r\n(otherwise the message will be requeste" +
-                "d during commit)";
+            this.chkWriteCommitMessageInCommitWindow.Text = "Compose commit messages in Commit dialog\r\n(otherwise the message will be requeste" +
+    "d during commit)";
             this.chkWriteCommitMessageInCommitWindow.UseVisualStyleBackColor = true;
             // 
             // grpAdditionalButtons
@@ -156,7 +147,7 @@
             this.grpAdditionalButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAdditionalButtons.Location = new System.Drawing.Point(3, 122);
             this.grpAdditionalButtons.Name = "grpAdditionalButtons";
-            this.grpAdditionalButtons.Size = new System.Drawing.Size(1290, 97);
+            this.grpAdditionalButtons.Size = new System.Drawing.Size(1134, 97);
             this.grpAdditionalButtons.TabIndex = 5;
             this.grpAdditionalButtons.TabStop = false;
             this.grpAdditionalButtons.Text = "Show additional buttons in commit button area";
@@ -172,7 +163,7 @@
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 19);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1284, 75);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1128, 75);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // chkShowCommitAndPush
@@ -210,10 +201,9 @@
             this.chkAddNewlineToCommitMessageWhenMissing.AutoSize = true;
             this.chkAddNewlineToCommitMessageWhenMissing.Location = new System.Drawing.Point(3, 28);
             this.chkAddNewlineToCommitMessageWhenMissing.Name = "chkAddNewlineToCommitMessageWhenMissing";
-            this.chkAddNewlineToCommitMessageWhenMissing.Size = new System.Drawing.Size(347, 19);
+            this.chkAddNewlineToCommitMessageWhenMissing.Size = new System.Drawing.Size(300, 19);
             this.chkAddNewlineToCommitMessageWhenMissing.TabIndex = 0;
-            this.chkAddNewlineToCommitMessageWhenMissing.Text =
-                "Ensure the second line of commit message is empty";
+            this.chkAddNewlineToCommitMessageWhenMissing.Text = "Ensure the second line of commit message is empty";
             this.chkAddNewlineToCommitMessageWhenMissing.UseVisualStyleBackColor = true;
             // 
             // CommitDialogSettingsPage
@@ -223,13 +213,12 @@
             this.AutoScroll = true;
             this.Controls.Add(this.groupBoxBehaviour);
             this.Name = "CommitDialogSettingsPage";
-            this.Size = new System.Drawing.Size(1302, 1039);
+            this.Size = new System.Drawing.Size(1146, 729);
             this.groupBoxBehaviour.ResumeLayout(false);
             this.groupBoxBehaviour.PerformLayout();
             this.tableLayoutPanelBehaviour.ResumeLayout(false);
             this.tableLayoutPanelBehaviour.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize) (this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages))
-                .EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages)).EndInit();
             this.grpAdditionalButtons.ResumeLayout(false);
             this.grpAdditionalButtons.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);

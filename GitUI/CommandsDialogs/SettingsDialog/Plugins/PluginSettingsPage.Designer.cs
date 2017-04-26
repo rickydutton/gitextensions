@@ -42,7 +42,7 @@
             this.labelNoSettings.AutoSize = true;
             this.labelNoSettings.Location = new System.Drawing.Point(3, 0);
             this.labelNoSettings.Name = "labelNoSettings";
-            this.labelNoSettings.Size = new System.Drawing.Size(594, 30);
+            this.labelNoSettings.Size = new System.Drawing.Size(1140, 30);
             this.labelNoSettings.TabIndex = 1;
             this.labelNoSettings.Text = "There are no settings available for this plugin.";
             this.labelNoSettings.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -60,14 +60,15 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(600, 301);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1146, 729);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
+            // panelAutoGenControls
             // 
             this.panelAutoGenControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelAutoGenControls.Location = new System.Drawing.Point(3, 33);
             this.panelAutoGenControls.Name = "panelAutoGenControls";
-            this.panelAutoGenControls.Size = new System.Drawing.Size(594, 225);
+            this.panelAutoGenControls.Size = new System.Drawing.Size(1140, 653);
             this.panelAutoGenControls.TabIndex = 2;
             // 
             // PluginSettingsPage
@@ -76,7 +77,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "PluginSettingsPage";
-            this.Size = new System.Drawing.Size(600, 301);
+            this.Size = new System.Drawing.Size(1146, 729);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);

@@ -10,6 +10,8 @@ namespace GitUI.CommandsDialogs.BrowseDialog.DashboardControl
 {
     public sealed partial class DashboardItem : GitExtensionsControl
     {
+        private readonly bool _isCow = GitCommands.AppSettings.IconStyle.Equals("Cow", StringComparison.OrdinalIgnoreCase);
+
         private ToolTip toolTip;
         private readonly AsyncLoader _branchNameLoader;
 
@@ -77,6 +79,12 @@ namespace GitUI.CommandsDialogs.BrowseDialog.DashboardControl
 
             if (icon != null)
                 Icon.Image = icon;
+
+            if (_isCow)
+            {
+                Icon.BackgroundImage = Resources.Cow;
+                Icon.BackgroundImageLayout = ImageLayout.Zoom;
+            }
 
             toolTip = new ToolTip
                               {

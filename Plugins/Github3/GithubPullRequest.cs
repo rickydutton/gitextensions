@@ -45,7 +45,10 @@ namespace Github3
             {
                 if (_diffData == null)
                 {
-                    HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(pullrequest.DiffUrl);
+                    HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(pullrequest.Url + "?" + "access_token=" + Github3Plugin.instance.OAuthToken[Github3Plugin.instance.Settings]);
+                    wr.Accept = "application/vnd.github.v3.diff";
+                    wr.UserAgent = "mabako/Git.hub";
+                    
                     using (var response = wr.GetResponse())
                     using (var respStream = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
                     {

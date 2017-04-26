@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GitUIPluginInterfaces.BuildServerIntegration;
@@ -23,7 +24,6 @@ namespace GitCommands
         private readonly List<GitRef> _refs = new List<GitRef>();
         private readonly GitModule _module;
         private BuildInfo _buildStatus;
-
         public GitRevision(GitModule aModule, string guid)
         {
             Guid = guid;
@@ -50,6 +50,19 @@ namespace GitCommands
                 if (Equals(value, _buildStatus)) return;
                 _buildStatus = value;
                 OnPropertyChanged("BuildStatus");
+            }
+        }
+
+
+        private String _issueStatus;
+        public String IssueStatus
+        {
+            get { return _issueStatus; }
+            set
+            {
+                if (Equals(value, _issueStatus)) return;
+                _issueStatus = value;
+                OnPropertyChanged("IssueStatus");
             }
         }
 

@@ -19,6 +19,7 @@ namespace GitCommands.Settings
             : base(aLowerPriority, aSettingsCache)
         {
             BuildServer = new BuildServer(this);
+            IssueTracker = new IssueTracker(this);
         }
 
         #region CreateXXX
@@ -97,6 +98,7 @@ namespace GitCommands.Settings
         }
 
         public readonly BuildServer BuildServer;
+        public readonly IssueTracker IssueTracker;
         
         public bool NoFastForwardMerge
         {
@@ -125,6 +127,27 @@ namespace GitCommands.Settings
             Type = new StringSetting("Type", this, null);
             EnableIntegration = new BoolNullableSetting("EnableIntegration", this, false);
             ShowBuildSummaryInGrid = new BoolNullableSetting("ShowBuildSummaryInGrid", this, true);
+        }
+
+        public SettingsPath TypeSettings
+        {
+            get
+            {
+                return new SettingsPath(this, Type.Value);
+            }
+        }
+    }
+
+    public class IssueTracker : SettingsPath
+    {
+        public readonly StringSetting Type;
+        public readonly BoolNullableSetting EnableIntegration;
+
+        public IssueTracker(RepoDistSettings container)
+            : base(container, "IssueTracker")
+        {
+            Type = new StringSetting("Type", this, null);
+            EnableIntegration = new BoolNullableSetting("EnableIntegration", this, false);
         }
 
         public SettingsPath TypeSettings
