@@ -254,12 +254,13 @@ namespace GitUI.Properties {
         ///   Looks up a localized string similar to Changelog
         ///=========
         ///### Version 2.49 (no due date)
-        ///* Cherry pick selected file/selected lines
-        ///* Added an option to remember the ignore-white-spaces preference for all the diff viewers
-        ///* Fixed an intermittent bug where ObjectDisposedException occurs on launch
+        ///* Cherry pick selected file/selected lines.
+        ///* Added an option to remember the ignore-white-spaces preference for all the diff viewers.
+        ///* Fixed an intermittent bug where ObjectDisposedException occurs on launch.
         ///* Fixed a bug where branch filter throws null reference exception when no repository selected
-        ///* Fixed a bug where unable to restore the windows after minimized by Win+M or Win+D when multiple instances of GitExtensions are running
-        ///* Support comb [rest of string was truncated]&quot;;.
+        ///### Version 2.48.05 (16 May 2015)
+        ///* Fixed issue #2493: StartBrowseDialog failed after clone
+        ///* Fixed issue #2783: Fixed crash when right click on bl [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChangeLog {
             get {
@@ -911,6 +912,16 @@ namespace GitUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Icon_86 {
+            get {
+                object obj = ResourceManager.GetObject("Icon_86", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconAddToGitIgnore {
             get {
                 object obj = ResourceManager.GetObject("IconAddToGitIgnore", resourceCulture);
@@ -1044,6 +1055,16 @@ namespace GitUI.Properties {
         internal static System.Drawing.Bitmap IconCommit {
             get {
                 object obj = ResourceManager.GetObject("IconCommit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconConsole {
+            get {
+                object obj = ResourceManager.GetObject("IconConsole", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1364,6 +1385,16 @@ namespace GitUI.Properties {
         internal static System.Drawing.Bitmap IconSelectRevision {
             get {
                 object obj = ResourceManager.GetObject("IconSelectRevision", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconShowFirstParent {
+            get {
+                object obj = ResourceManager.GetObject("IconShowFirstParent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

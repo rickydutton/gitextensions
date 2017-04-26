@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using GitUIPluginInterfaces;
 using GitUIPluginInterfaces.BuildServerIntegration;
 using JetBrains.Annotations;
 
@@ -21,7 +22,7 @@ namespace GitCommands
 
         public string[] ParentGuids;
         private IList<IGitItem> _subItems;
-        private readonly List<GitRef> _refs = new List<GitRef>();
+        private readonly List<IGitRef> _refs = new List<IGitRef>();
         private readonly GitModule _module;
         private BuildInfo _buildStatus;
         public GitRevision(GitModule aModule, string guid)
@@ -31,7 +32,7 @@ namespace GitCommands
             _module = aModule;
         }
 
-        public List<GitRef> Refs { get { return _refs; } }
+        public List<IGitRef> Refs { get { return _refs; } }
 
         public string TreeGuid { get; set; }
 
@@ -91,6 +92,18 @@ namespace GitCommands
                 sha = sha.Substring(0, 4) + ".." + sha.Substring(sha.Length - 4, 4);
             }
             return String.Format("{0}:{1}", sha, Subject);
+        }
+
+        public static string ToShortSha(String sha)
+        {
+            if (sha == null)
+                throw new ArgumentNullException("sha");
+            if (sha.Length > 8)
+            {
+                sha = sha.Substring(0, 8);
+            }
+
+            return sha;
         }
 
         public bool MatchesSearchString(string searchString)

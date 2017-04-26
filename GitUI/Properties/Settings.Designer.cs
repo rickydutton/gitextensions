@@ -94,5 +94,17 @@ namespace GitUI.Properties {
                 this["FormBrowse_MainSplitContainer_SplitterDistance"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FormBrowse_LeftPanel_Collapsed {
+            get {
+                return ((bool)(this["FormBrowse_LeftPanel_Collapsed"]));
+            }
+            set {
+                this["FormBrowse_LeftPanel_Collapsed"] = value;
+            }
+        }
     }
 }

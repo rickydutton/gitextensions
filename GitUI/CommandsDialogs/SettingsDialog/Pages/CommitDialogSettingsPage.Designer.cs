@@ -30,6 +30,7 @@
         {
             this.groupBoxBehaviour = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanelBehaviour = new System.Windows.Forms.TableLayoutPanel();
+            this.chkAutocomplete = new System.Windows.Forms.CheckBox();
             this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages = new System.Windows.Forms.NumericUpDown();
             this.lblCommitDialogNumberOfPreviousMessages = new System.Windows.Forms.Label();
             this.chkShowErrorsWhenStagingFiles = new System.Windows.Forms.CheckBox();
@@ -65,12 +66,13 @@
             this.tableLayoutPanelBehaviour.ColumnCount = 2;
             this.tableLayoutPanelBehaviour.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanelBehaviour.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanelBehaviour.Controls.Add(this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages, 1, 3);
-            this.tableLayoutPanelBehaviour.Controls.Add(this.lblCommitDialogNumberOfPreviousMessages, 0, 3);
-            this.tableLayoutPanelBehaviour.Controls.Add(this.chkShowErrorsWhenStagingFiles, 0, 0);
-            this.tableLayoutPanelBehaviour.Controls.Add(this.chkWriteCommitMessageInCommitWindow, 0, 2);
+            this.tableLayoutPanelBehaviour.Controls.Add(this.chkAutocomplete, 0, 0);            
+            this.tableLayoutPanelBehaviour.Controls.Add(this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages, 1, 4);
+            this.tableLayoutPanelBehaviour.Controls.Add(this.lblCommitDialogNumberOfPreviousMessages, 0, 4);
+            this.tableLayoutPanelBehaviour.Controls.Add(this.chkShowErrorsWhenStagingFiles, 0, 1);
+            this.tableLayoutPanelBehaviour.Controls.Add(this.chkWriteCommitMessageInCommitWindow, 0, 3);
             this.tableLayoutPanelBehaviour.Controls.Add(this.grpAdditionalButtons, 0, 5);
-            this.tableLayoutPanelBehaviour.Controls.Add(this.chkAddNewlineToCommitMessageWhenMissing, 0, 1);
+            this.tableLayoutPanelBehaviour.Controls.Add(this.chkAddNewlineToCommitMessageWhenMissing, 0, 2);
             this.tableLayoutPanelBehaviour.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanelBehaviour.Location = new System.Drawing.Point(3, 19);
             this.tableLayoutPanelBehaviour.Name = "tableLayoutPanelBehaviour";
@@ -85,6 +87,15 @@
             this.tableLayoutPanelBehaviour.Size = new System.Drawing.Size(1140, 222);
             this.tableLayoutPanelBehaviour.TabIndex = 57;
             // 
+            // chkAutocomplete
+            // 
+            this.chkAutocomplete.AutoSize = true;
+            this.chkAutocomplete.Location = new System.Drawing.Point(3, 97);
+            this.chkAutocomplete.Name = "chkAutocomplete";
+            this.chkAutocomplete.Size = new System.Drawing.Size(253, 19);
+            this.chkAutocomplete.TabIndex = 6;
+            this.chkAutocomplete.Text = "Provide auto-completion in commit dialog";
+            this.chkAutocomplete.UseVisualStyleBackColor = true;            // 
             // _NO_TRANSLATE_CommitDialogNumberOfPreviousMessages
             // 
             this._NO_TRANSLATE_CommitDialogNumberOfPreviousMessages.Location = new System.Drawing.Point(338, 93);
@@ -242,5 +253,6 @@
         private System.Windows.Forms.CheckBox chkShowResetUnstagedChanges;
         private System.Windows.Forms.CheckBox chkShowResetAllChanges;
         private System.Windows.Forms.CheckBox chkAddNewlineToCommitMessageWhenMissing;
+        private System.Windows.Forms.CheckBox chkAutocomplete;
     }
 }

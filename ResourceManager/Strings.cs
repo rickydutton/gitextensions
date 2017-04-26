@@ -86,11 +86,6 @@ namespace ResourceManager
             return Instance._loadingData.Text;
         }
 
-        public static string GetUninterestingDiffOmitted()
-        {
-            return Instance._uninterestingDiffOmitted.Text;
-        }
-
         /// <summary>"branches" translation.</summary>
         public static readonly TranslationString branches = new TranslationString("Branches");
         /// <summary>"remotes" translation.</summary>
@@ -112,6 +107,10 @@ namespace ResourceManager
         /// <summary>"Fetch and Push URLs differ"</summary>
         public static TranslationString RemoteDifferingUrlsTip = new TranslationString("Fetch and Push URLs differ");
 
+        public static string GetUninterestingDiffOmitted()
+        {
+            return Instance._uninterestingDiffOmitted.Text;
+        }
 
         private readonly TranslationString _dateText               = new TranslationString("Date");
         private readonly TranslationString _authorText             = new TranslationString("Author");
